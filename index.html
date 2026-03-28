@@ -589,6 +589,19 @@ ul { list-style: none; }
 /* ═══════════════════════════════════════════
    BEER CATALOG
    ═══════════════════════════════════════════ */
+
+/* Animations fond de carte */
+@keyframes numFloat {
+  0%, 100% { transform: translate(-50%, -52%) rotate(-8deg) scale(1); }
+  35%  { transform: translate(-50%, -48%) rotate(-1deg) scale(1.05); }
+  70%  { transform: translate(-50%, -55%) rotate(6deg)  scale(0.96); }
+}
+
+@keyframes shimmerPulse {
+  0%, 100% { transform: translateX(-50%) scale(1);    opacity: 0.9; }
+  50%       { transform: translateX(-50%) scale(1.18); opacity: 1;   }
+}
+
 .beers {
   padding: var(--section-pad) 24px;
   background: var(--cream);
@@ -647,181 +660,211 @@ ul { list-style: none; }
   border-color: var(--dark);
 }
 
-/* Beer grid */
+/* Beer grid — 3 colonnes */
 .beers__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
 
 /* Beer card */
 .beer-card {
   position: relative;
-  border-radius: 16px;
+  border-radius: 22px;
   overflow: hidden;
-  background: #fff;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-  transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
+  background: var(--beer-color, var(--amber));
+  height: 420px;
+  isolation: isolate;
+  transition: transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94),
+              box-shadow  0.5s cubic-bezier(0.25,0.46,0.45,0.94);
   cursor: default;
 }
 
 .beer-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 28px 70px rgba(0,0,0,0.22);
 }
 
 .beer-card[hidden] { display: none; }
 
+/* Grand numéro décoratif animé (derrière la bouteille) */
+.beer-card::before {
+  content: attr(data-num);
+  position: absolute;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 310px;
+  line-height: 0.85;
+  color: rgba(255,255,255,0.16);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -52%) rotate(-8deg) scale(1);
+  z-index: 1;
+  animation: numFloat 10s ease-in-out infinite;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Zone visuelle — container transparent pour shimmer + bouteille */
 .beer-card__visual {
-  position: relative;
-  height: 200px;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
 }
 
+/* Blob lumineux animé (shimmer) */
 .beer-card__visual::before {
   content: '';
   position: absolute;
-  inset: 0;
-  opacity: 0.12;
-  background: var(--beer-color, var(--amber));
+  width: 72%;
+  height: 60%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 68%);
+  top: 18%;
+  left: 50%;
+  transform: translateX(-50%) scale(1);
+  animation: shimmerPulse 5s ease-in-out infinite;
+  z-index: 0;
+  pointer-events: none;
 }
 
-.beer-card__color-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: var(--beer-color, var(--amber));
-}
+.beer-card__visual::after { content: none; }
 
+/* Masquer l'ancienne barre couleur */
+.beer-card__color-bar { display: none; }
+
+/* Bouteille — grande et proéminente */
 .beer-card__bottle {
-  height: 180px;
+  height: 255px;
   width: auto;
   object-fit: contain;
-  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
-  transition: transform 0.5s var(--ease-out);
+  filter: drop-shadow(0 12px 28px rgba(0,0,0,0.42));
+  transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);
   position: relative;
   z-index: 1;
+  margin-top: -14px;
 }
 
 .beer-card:hover .beer-card__bottle {
-  transform: scale(1.05) translateY(-4px);
+  transform: scale(1.07) translateY(-10px);
 }
 
+/* Badge ABV */
 .beer-card__abv {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  background: var(--dark);
-  color: var(--cream);
+  top: 14px;
+  right: 14px;
+  background: rgba(0,0,0,0.28);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #fff;
   font-size: 0.75rem;
   font-weight: 700;
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: 100px;
   z-index: 2;
+  border: 1px solid rgba(255,255,255,0.22);
 }
 
+/* Texte permanent — overlay bas de carte */
 .beer-card__body {
-  padding: 20px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  padding: 38px 20px 20px;
+  background: linear-gradient(to top,
+    rgba(0,0,0,0.72) 0%,
+    rgba(0,0,0,0.32) 55%,
+    transparent 100%);
 }
 
 .beer-card__name {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   line-height: 1.2;
   margin-bottom: 4px;
-  color: var(--text-dark);
+  color: #fff;
 }
 
 .beer-card__style {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  color: var(--beer-color, var(--amber));
+  color: rgba(255,255,255,0.72);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 8px;
+  letter-spacing: 0.1em;
+  margin-bottom: 0;
 }
 
-.beer-card__desc {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  line-height: 1.5;
-  margin-bottom: 12px;
-}
+.beer-card__desc { display: none; }
 
-/* Card reveal overlay on hover */
+/* Reveal au survol — slide-up depuis le bas */
 .beer-card__reveal {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(26,23,20,0.92) 0%, rgba(26,23,20,0.97) 100%);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  min-height: 46%;
+  padding: 22px 20px 20px;
+  background: rgba(8,6,4,0.9);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transform: translateY(100%);
+  transition: transform 0.42s cubic-bezier(0.25,0.46,0.45,0.94);
+  z-index: 5;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 28px;
-  opacity: 0;
-  transition: opacity 0.35s;
-  z-index: 3;
 }
 
 .beer-card:hover .beer-card__reveal,
 .beer-card:focus-within .beer-card__reveal {
-  opacity: 1;
+  transform: translateY(0);
 }
 
 .beer-card__reveal-name {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1.5rem;
-  color: var(--cream);
-  margin-bottom: 16px;
+  font-size: 1.15rem;
+  color: #fff;
+  margin-bottom: 12px;
 }
 
 .beer-card__reveal-row {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
-.beer-card__reveal-icon {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
-  margin-top: 2px;
-  opacity: 0.6;
-}
+.beer-card__reveal-icon { display: none; }
 
 .beer-card__reveal-label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--amber-light);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.45);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 2px;
+  letter-spacing: 0.12em;
+  margin-bottom: 3px;
 }
 
 .beer-card__reveal-text {
-  font-size: 0.9rem;
-  color: rgba(245, 237, 216, 0.8);
+  font-size: 0.84rem;
+  color: rgba(255,255,255,0.82);
   line-height: 1.4;
 }
 
-/* Mobile: tap to reveal */
+/* Mobile : reveal toujours visible */
 @media (hover: none) {
   .beer-card__reveal {
-    position: relative;
-    opacity: 1;
-    background: var(--dark);
-    inset: auto;
-    border-radius: 0 0 16px 16px;
-    padding: 20px;
+    transform: translateY(0);
   }
-  .beer-card__body { display: block; }
+  .beer-card__body { display: none; }
 }
 
 /* ═══════════════════════════════════════════
@@ -1638,8 +1681,8 @@ ul { list-style: none; }
   .hero__badge { display: none; }
 
   .beers__grid {
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
   }
 
   .pro__isobar { grid-template-columns: 1fr; }
@@ -1649,6 +1692,7 @@ ul { list-style: none; }
   .beers__grid {
     grid-template-columns: 1fr;
   }
+  .beer-card { height: 380px; }
 
   .beers__filters {
     gap: 6px;
@@ -1781,7 +1825,7 @@ ul { list-style: none; }
     <div class="beers__grid" role="tabpanel">
 
       <!-- 1. L'Échappée Belle -->
-      <article class="beer-card reveal" data-cat="blonde" style="--beer-color:#5B8C3E" aria-label="L'Échappée Belle">
+      <article class="beer-card reveal" data-cat="blonde" data-num="01" style="--beer-color:#5B8C3E" aria-label="L'Échappée Belle">
         <div class="beer-card__visual">
           <div class="beer-card__color-bar"></div>
           <span class="beer-card__abv">5.4%</span>
@@ -1804,7 +1848,7 @@ ul { list-style: none; }
       </article>
 
       <!-- 2. Honeymoon -->
-      <article class="beer-card reveal reveal-delay-1" data-cat="blonde" style="--beer-color:#E8C94A" aria-label="Honeymoon">
+      <article class="beer-card reveal reveal-delay-1" data-cat="blonde" data-num="02" style="--beer-color:#E8C94A" aria-label="Honeymoon">
         <div class="beer-card__visual">
           <div class="beer-card__color-bar"></div>
           <span class="beer-card__abv">6.4%</span>
@@ -1827,7 +1871,7 @@ ul { list-style: none; }
       </article>
 
       <!-- 3. Blossom Therapy -->
-      <article class="beer-card reveal reveal-delay-2" data-cat="blonde" style="--beer-color:#D65F8A" aria-label="Blossom Therapy">
+      <article class="beer-card reveal reveal-delay-2" data-cat="blonde" data-num="03" style="--beer-color:#D65F8A" aria-label="Blossom Therapy">
         <div class="beer-card__visual">
           <div class="beer-card__color-bar"></div>
           <span class="beer-card__abv">5.4%</span>
@@ -1850,7 +1894,7 @@ ul { list-style: none; }
       </article>
 
       <!-- 4. Namasté Timut -->
-      <article class="beer-card reveal reveal-delay-3" data-cat="blonde" style="--beer-color:#8B5BA6" aria-label="Namasté Timut">
+      <article class="beer-card reveal reveal-delay-3" data-cat="blonde" data-num="04" style="--beer-color:#8B5BA6" aria-label="Namasté Timut">
         <div class="beer-card__visual">
           <div class="beer-card__color-bar"></div>
           <span class="beer-card__abv">5.4%</span>
@@ -1873,7 +1917,7 @@ ul { list-style: none; }
       </article>
 
       <!-- 5. Hop'la Weiss -->
-      <article class="beer-card reveal" data-cat="blonde speciale" style="--beer-color:#E8A832" aria-label="Hop'la Weiss">
+      <article class="beer-card reveal" data-cat="blonde speciale" data-num="05" style="--beer-color:#E8A832" aria-label="Hop'la Weiss">
         <div class="beer-card__visual">
           <div class="beer-card__color-bar"></div>
           <span class="beer-card__abv">6.4%</span>
@@ -1896,7 +1940,7 @@ ul { list-style: none; }
       </article>
 
       <!-- 6. La Printanière -->
-      <article class="beer-card reveal reveal-delay-1" data-cat="blonde saison" style="--beer-color:#7B9EC4" aria-label="La Printanière">
+      <article class="beer-card reveal reveal-delay-1" data-cat="blonde saison" data-num="06" style="--beer-color:#7B9EC4" aria-label="La Printanière">
         <div class="beer-card__visual">
           <div class="beer-card__color-bar"></div>
           <span class="beer-card__abv">5.4%</span>
@@ -1919,7 +1963,7 @@ ul { list-style: none; }
       </article>
 
       <!-- 7. Moana Beach -->
-      <article class="beer-card reveal reveal-delay-2" data-cat="ipa" style="--beer-color:#4AAFC7" aria-label="Moana Beach">
+      <article class="beer-card reveal reveal-delay-2" data-cat="ipa" data-num="07" style="--beer-color:#4AAFC7" aria-label="Moana Beach">
         <div class="beer-card__visual">
           <div class="beer-card__color-bar"></div>
           <span class="beer-card__abv">4.5%</span>
@@ -1942,7 +1986,7 @@ ul { list-style: none; }
       </article>
 
       <!-- 8. Oh My Goat -->
-      <article class="beer-card reveal reveal-delay-3" data-cat="ipa" style="--beer-color:#D43A6E" aria-label="Oh My Goat">
+      <article class="beer-card reveal reveal-delay-3" data-cat="ipa" data-num="08" style="--beer-color:#D43A6E" aria-label="Oh My Goat">
         <div class="beer-card__visual">
           <div class="beer-card__color-bar"></div>
           <span class="beer-card__abv">6.5%</span>
@@ -1965,7 +2009,7 @@ ul { list-style: none; }
       </article>
 
       <!-- 9. L'Amalthée -->
-      <article class="beer-card reveal" data-cat="ambree" style="--beer-color:#C75B2A" aria-label="L'Amalthée">
+      <article class="beer-card reveal" data-cat="ambree" data-num="09" style="--beer-color:#C75B2A" aria-label="L'Amalthée">
         <div class="beer-card__visual">
           <div class="beer-card__color-bar"></div>
           <span class="beer-card__abv">6.9%</span>
@@ -1988,7 +2032,7 @@ ul { list-style: none; }
       </article>
 
       <!-- 10. L'Hermine -->
-      <article class="beer-card reveal reveal-delay-1" data-cat="ambree saison" style="--beer-color:#C0392B" aria-label="L'Hermine">
+      <article class="beer-card reveal reveal-delay-1" data-cat="ambree saison" data-num="10" style="--beer-color:#C0392B" aria-label="L'Hermine">
         <div class="beer-card__visual">
           <div class="beer-card__color-bar"></div>
           <span class="beer-card__abv">5.8%</span>
@@ -2011,7 +2055,7 @@ ul { list-style: none; }
       </article>
 
       <!-- 11. Boré'Ale Kveik -->
-      <article class="beer-card reveal reveal-delay-2" data-cat="speciale" style="--beer-color:#2D7A4F" aria-label="Boré'Ale Kveik">
+      <article class="beer-card reveal reveal-delay-2" data-cat="speciale" data-num="11" style="--beer-color:#2D7A4F" aria-label="Boré'Ale Kveik">
         <div class="beer-card__visual">
           <div class="beer-card__color-bar"></div>
           <span class="beer-card__abv">6.1%</span>
@@ -2034,7 +2078,7 @@ ul { list-style: none; }
       </article>
 
       <!-- 12. Very Mad Triple -->
-      <article class="beer-card reveal reveal-delay-3" data-cat="speciale" style="--beer-color:#D47B2A" aria-label="Very Mad Triple">
+      <article class="beer-card reveal reveal-delay-3" data-cat="speciale" data-num="12" style="--beer-color:#D47B2A" aria-label="Very Mad Triple">
         <div class="beer-card__visual">
           <div class="beer-card__color-bar"></div>
           <span class="beer-card__abv">8.5%</span>
