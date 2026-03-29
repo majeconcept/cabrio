@@ -565,6 +565,7 @@ const FORMATS = [
   { id: '33c', label: '33cl Carton 12', price: 24.00 },
   { id: '75u', label: '75cl Unit\u00E9', price: 4.80 },
   { id: '75c', label: '75cl Carton 6', price: 26.40 },
+  { id: '75c12', label: '75cl Caisse 12', price: 57.60 },
   { id: 'f20', label: 'F\u00FBt 20L', price: 85.00 },
   { id: 'f30', label: 'F\u00FBt 30L', price: 120.00 }
 ];
@@ -853,9 +854,9 @@ function createOrderFromAdmin(e) {
 
   // Check for deposits
   lines.forEach(l => {
-    if (l.formatId === 'f20' || l.formatId === 'f30' || l.formatId === '75c') {
-      const type = l.formatId === '75c' ? 'Caisse 12x75cl' : (l.formatId === 'f20' ? 'F\u00FBt 20L' : 'F\u00FBt 30L');
-      const amount = l.formatId === '75c' ? 5 : 30;
+    if (l.formatId === 'f20' || l.formatId === 'f30' || l.formatId === '75c12') {
+      const type = l.formatId === '75c12' ? 'Caisse 12x75cl' : (l.formatId === 'f20' ? 'F\u00FBt 20L' : 'F\u00FBt 30L');
+      const amount = l.formatId === '75c12' ? 5 : 30;
       order.deposits.push({ type, qty: l.qty, amount });
     }
   });
