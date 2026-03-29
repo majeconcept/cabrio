@@ -617,6 +617,21 @@ ul { list-style: none; }
   margin-bottom: 48px;
 }
 
+.beers__certification {
+  display: block;
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin: 20px auto 0;
+  opacity: 0.88;
+  filter: drop-shadow(0 3px 10px rgba(0,0,0,0.13));
+  transition: transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.4s;
+}
+.beers__certification:hover {
+  transform: rotate(8deg) scale(1.08);
+  opacity: 1;
+}
+
 .beers__title {
   font-size: clamp(2rem, 5vw, 3.5rem);
   margin-bottom: 12px;
@@ -692,7 +707,8 @@ ul { list-style: none; }
 }
 
 .beer-card:hover {
-  transform: translateY(-10px) scale(1.02);
+  z-index: 10;
+  transform: translateY(-6px);
   box-shadow: 0 28px 70px color-mix(in srgb, var(--beer-color) 50%, transparent);
 }
 .beer-card:hover::after {
@@ -771,7 +787,8 @@ ul { list-style: none; }
   width: auto;
   object-fit: contain;
   filter: drop-shadow(4px 8px 18px rgba(0,0,0,0.45));
-  transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);
+  transition: transform 0.55s cubic-bezier(0.25,0.46,0.45,0.94),
+              filter  0.55s cubic-bezier(0.25,0.46,0.45,0.94);
   position: absolute;
   top: -64px;
   left: 50%;
@@ -780,7 +797,10 @@ ul { list-style: none; }
 }
 
 .beer-card:hover .beer-card__bottle {
-  transform: translateX(-50%) scale(1.06) translateY(-16px);
+  /* Glisse à droite + zoom 20% + légère élévation
+     translateX(-15%) = décalage de 35% de la largeur bouteille vers la droite */
+  transform: translateX(-15%) scale(1.2) translateY(-14px);
+  filter: drop-shadow(8px 14px 28px rgba(0,0,0,0.62));
 }
 
 /* Badge ABV */
@@ -981,6 +1001,20 @@ ul { list-style: none; }
   width: 16px;
   height: 16px;
   opacity: 0.7;
+}
+
+.story__badge--alsace {
+  background: #fff;
+  border-color: rgba(255,255,255,0.2);
+  border-radius: 12px;
+  padding: 6px 10px;
+  gap: 0;
+}
+.story__badge--alsace img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  display: block;
 }
 
 .story__visual {
@@ -1606,7 +1640,12 @@ ul { list-style: none; }
   font-size: 1.2rem;
 }
 
-.footer__brand svg { width: 28px; height: 28px; }
+.footer__brand svg,
+.footer__brand img { width: 28px; height: 28px; }
+.footer__brand img {
+  filter: brightness(0) invert(1);
+  opacity: 0.9;
+}
 
 .footer__links {
   display: flex;
@@ -1865,6 +1904,7 @@ ul { list-style: none; }
       <span class="section-label">La Gamme</span>
       <h2 class="beers__title heading-display heading-rainbow">Nos bi&egrave;res de caract&egrave;re</h2>
       <p class="beers__intro">12 cr&eacute;ations artisanales, chacune avec sa personnalit&eacute;. De la blonde d&eacute;salt&eacute;rante &agrave; la triple puissante, il y a une CABRIO pour chaque moment.</p>
+      <img src="images/Pictogramme-alsacienne.png" alt="Produit en Alsace" class="beers__certification" width="80" height="80">
     </div>
 
     <div class="beers__filters reveal" role="tablist" aria-label="Filtrer les bières par catégorie">
@@ -2195,9 +2235,8 @@ ul { list-style: none; }
         <p>Passionn&eacute; par sa r&eacute;gion, ses traditions et les produits de qualit&eacute;, Christophe lance la Brasserie CABRIO en 2012. D'abord brasseur amateur, il p&eacute;rennise la tradition brassicole historique de l'Alsace en proposant des bi&egrave;res de caract&egrave;re vendues au plus pr&egrave;s du consommateur.</p>
         <p>Notre brasserie utilise des mati&egrave;res premi&egrave;res de grande qualit&eacute; et de premi&egrave;re fra&icirc;cheur, privil&eacute;giant l'approvisionnement local. Chaque bi&egrave;re est <strong>non filtr&eacute;e et non pasteuris&eacute;e</strong> pour pr&eacute;server toute sa richesse aromatique.</p>
         <div class="story__badges">
-          <span class="story__badge">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            Produit en Alsace
+          <span class="story__badge story__badge--alsace">
+            <img src="images/Pictogramme-alsacienne.png" alt="Produit en Alsace" width="48" height="48">
           </span>
           <span class="story__badge">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
@@ -2374,16 +2413,6 @@ ul { list-style: none; }
           </div>
         </div>
         <div class="pro__field">
-          <label for="proVolume">Volume estim&eacute;</label>
-          <select id="proVolume" name="volume">
-            <option value="" disabled selected>Volume mensuel estim&eacute;</option>
-            <option value="decouverte">D&eacute;couverte (< 50L)</option>
-            <option value="regulier">R&eacute;gulier (50-200L)</option>
-            <option value="important">Important (200-500L)</option>
-            <option value="gros">Gros volume (500L+)</option>
-          </select>
-        </div>
-        <div class="pro__field">
           <label for="proMessage">Message</label>
           <textarea id="proMessage" name="message" placeholder="Parlez-nous de votre projet, vos besoins en formats, vos questions..."></textarea>
         </div>
@@ -2465,9 +2494,7 @@ ul { list-style: none; }
 <footer class="footer" role="contentinfo">
   <div class="footer__inner">
     <div class="footer__brand">
-      <svg viewBox="0 0 36 36" fill="currentColor" width="28" height="28" aria-hidden="true">
-        <path d="M18 2c-1.5 0-2.8.8-3.5 2l-1.2 2.5c-.3.5-.2 1.1.2 1.5l1 1c-2 1.5-3.5 4-3.5 7v3c0 1 .2 2 .5 3l-2.5 8c-.3 1 .4 2 1.5 2h2c.8 0 1.5-.5 1.7-1.3l1.8-6h8l1.8 6c.2.8.9 1.3 1.7 1.3h2c1.1 0 1.8-1 1.5-2l-2.5-8c.3-1 .5-2 .5-3v-3c0-3-1.5-5.5-3.5-7l1-1c.4-.4.5-1 .2-1.5L23.5 4c-.7-1.2-2-2-3.5-2zm-2 10c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1z"/>
-      </svg>
+      <img src="images/FAVICON.svg" alt="" aria-hidden="true" width="28" height="28">
       CABRIO
     </div>
     <div class="footer__links">
