@@ -25,6 +25,7 @@
 ### Tarifs PRO HT 2026 (prix unitaires, droits acquittés)
 
 Les prix varient par produit. Fourchette : 33cl de 1.55€ à 1.99€, 75cl de 3.75€ à 4.14€.
+Fûts 30L : prix/litre par produit de 2.10€ (Slimo) à 4.20€ (Red Dingue).
 Les prix par lot sont calculés automatiquement (prix unitaire x quantité du lot).
 
 ### Formats de conditionnement
@@ -36,8 +37,15 @@ Les prix par lot sont calculés automatiquement (prix unitaire x quantité du lo
 | 75u | 75cl Unité | prix unitaire 75cl |
 | 75c | 75cl Carton de 6 | 6 x prix unitaire 75cl |
 | 75c12 | 75cl Caisse CFP 12 (consignée 5€) | 12 x prix unitaire 75cl |
-| f20 | Fût 20L (consigné 30€) | 85.00€ fixe |
-| f30 | Fût 30L (consigné 30€) | 120.00€ fixe |
+| f30 | Fût 30L inox Tête A (consigné 30€) | 30 x prix/litre du produit |
+
+### RFA Fûts (Remise de Fin d'Année)
+- 1-10 fûts : prix de base
+- 11-20 fûts : RFA 3%
+- 21-30 fûts : RFA 5%
+- 31-40 fûts : RFA 7%
+- 41-50 fûts : RFA 8%
+- Sous forme d'avoir, année calendaire
 
 ### Packs spéciaux
 - Tripack 3x33cl : 6.76€ HT

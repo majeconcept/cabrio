@@ -530,11 +530,22 @@ input, select, textarea { font: inherit; color: inherit; }
   border-top: 1px solid rgba(245, 237, 216, 0.05);
   gap: 8px;
 }
+.format-row__left {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  gap: 1px;
+}
 .format-row__label {
   font-size: 0.78rem;
   color: rgba(245, 237, 216, 0.6);
-  flex: 1;
-  min-width: 0;
+}
+.format-row__ean {
+  font-size: 0.62rem;
+  color: rgba(245, 237, 216, 0.3);
+  font-family: 'DM Sans', monospace;
+  letter-spacing: 0.03em;
 }
 .format-row__price {
   font-size: 0.75rem;
@@ -1407,19 +1418,19 @@ input, select, textarea { font: inherit; color: inherit; }
    DATA
    ═══════════════════════════════════════════ */
 const PRODUCTS = [
-  { id: 'echappee', name: "L'\u00C9chapp\u00E9e Belle", style: 'Blonde \u2022 Houblon Triskel', abv: '5.4%', cat: 'blonde', color: '#5B8C3E', img: "images/L'\u00C9chapp\u00E9e Belle bouteille.webp", medal: 'OR Lyon 2023', season: false, prices: { '33u': 1.76, '75u': 3.75 }, ean: { '33': '3760237190017', '75': '3760237190000' } },
-  { id: 'honeymoon', name: 'Honeymoon', style: 'Blonde au miel', abv: '6.4%', cat: 'blonde', color: '#E8C94A', img: 'images/Honeymoon bouteille.webp', medal: 'OR Lyon 2023', season: false, prices: { '33u': 1.99, '75u': 4.14 }, ean: { '33': '3760237190154', '75': '3760237190147' } },
-  { id: 'blossom', name: 'Blossom Therapy', style: 'Blonde \u2022 Fleur de sureau', abv: '5.4%', cat: 'blonde', color: '#D65F8A', img: 'images/Blossom Therapy bouteille.webp', medal: '', season: true, prices: { '33u': 1.87, '75u': 3.91 }, ean: { '33': '3760237190130', '75': '3760237190086' } },
-  { id: 'namaste', name: 'Namast\u00E9 Timut', style: 'Blonde \u2022 Baie de Timut', abv: '5.4%', cat: 'blonde', color: '#8B5BA6', img: 'images/Namaste Timut bouteille.webp', medal: '', season: false, prices: { '33u': 1.94, '75u': 3.98 }, ean: { '33': '3760237190253', '75': '3760237190260' } },
-  { id: 'hopla', name: "Hop'la Weiss", style: 'Blanche \u2022 Weizen', abv: '6.4%', cat: 'speciale', color: '#E8A832', img: 'images/Hop\'la Weiss Blanche bouteille.webp', medal: 'ARGENT Lyon 2024', season: false, prices: { '33u': 1.87, '75u': 3.86 }, ean: { '33': '3760237190055', '75': '3760237190048' } },
-  { id: 'printaniere', name: 'La Printani\u00E8re', style: 'Blonde \u2022 Cardamome', abv: '5.4%', cat: 'saison', color: '#7B9EC4', img: 'images/La printani\u00E8re bouteille.webp', medal: '', season: true, prices: { '33u': 1.87, '75u': 3.91 }, ean: { '33': '3760237190123', '75': '3760237190116' } },
-  { id: 'moana', name: 'Moana Beach', style: 'Session IPA', abv: '4.5%', cat: 'ipa', color: '#4AAFC7', img: 'images/Moana Beach Session IPA bouteille.webp', medal: 'ARGENT Lyon 2024', season: false, prices: { '33u': 1.94, '75u': 3.98 }, ean: { '33': '3760237190215', '75': '3760237190208' } },
-  { id: 'omg', name: 'Oh My Goat', style: 'IPA \u2022 Houblon Mosaic', abv: '6.5%', cat: 'ipa', color: '#D43A6E', img: 'images/Oh My Goat Pale Ale bouteille.webp', medal: 'OR Lyon 2023', season: false, prices: { '33u': 1.94, '75u': 3.98 }, ean: { '33': '3760237190178', '75': '3760237190161' } },
-  { id: 'amalthee', name: "L'Amalth\u00E9e", style: 'Ambr\u00E9e \u2022 Malts torr\u00E9fi\u00E9s', abv: '6.9%', cat: 'ambree', color: '#C75B2A', img: 'images/L\'Amalth\u00E9e Ambr\u00E9e bouteille.webp', medal: 'ARGENT Lyon 2023', season: false, prices: { '33u': 1.81, '75u': 3.86 }, ean: { '33': '3760237190031', '75': '3760237190024' } },
-  { id: 'hermine', name: "L'Hermine", style: 'Ambr\u00E9e d\'hiver \u2022 \u00C9pices', abv: '5.8%', cat: 'saison', color: '#C0392B', img: 'images/L\'Hermine \u00C9pices Noel_bouteille.webp', medal: '', season: true, prices: { '33u': 1.87, '75u': 3.91 }, ean: { '33': '3760237190109', '75': '3760237190185' } },
-  { id: 'boreale', name: "Bor\u00E9'Ale Kveik", style: 'Kveik \u2022 Levure norv\u00E9gienne', abv: '6.1%', cat: 'speciale', color: '#2D7A4F', img: 'images/Boreale Kveik _bouteille.webp', medal: 'OR Lyon 2024', season: false, prices: { '33u': 1.87, '75u': 3.91 }, ean: { '33': '3760237190277', '75': '3760237190284' } },
-  { id: 'verymad', name: 'Very Mad Triple', style: 'Triple grain \u2022 Cuivr\u00E9e', abv: '8.5%', cat: 'speciale', color: '#D47B2A', img: 'images/Very Mad Triple bouteille.webp', medal: '', season: false, prices: { '33u': 1.94, '75u': 3.98 }, ean: { '33': '3760237190246', '75': '3760237190239' } },
-  { id: 'slimo', name: 'Slimo', style: 'Limonade artisanale', abv: '', cat: 'limonade', color: '#C9A84C', img: 'images/Slimo_bouteille.webp', medal: '', season: false, prices: { '33u': 1.55 }, ean: { '33': '3760237190291' } }
+  { id: 'echappee', name: "L'\u00C9chapp\u00E9e Belle", style: 'Blonde \u2022 Houblon Triskel', abv: '5.4%', cat: 'blonde', color: '#5B8C3E', img: "images/L'\u00C9chapp\u00E9e Belle bouteille.webp", medal: 'OR Lyon 2023', season: false, prices: { '33u': 1.76, '75u': 3.75, 'f30': 3.70 }, ean: { '33': '3760237190017', '75': '3760237190000' } },
+  { id: 'honeymoon', name: 'Honeymoon', style: 'Blonde au miel', abv: '6.4%', cat: 'blonde', color: '#E8C94A', img: 'images/Honeymoon bouteille.webp', medal: 'OR Lyon 2023', season: false, prices: { '33u': 1.99, '75u': 4.14, 'f30': 3.95 }, ean: { '33': '3760237190154', '75': '3760237190147' } },
+  { id: 'blossom', name: 'Blossom Therapy', style: 'Blonde \u2022 Fleur de sureau', abv: '5.4%', cat: 'blonde', color: '#D65F8A', img: 'images/Blossom Therapy bouteille.webp', medal: '', season: true, prices: { '33u': 1.87, '75u': 3.91, 'f30': 3.90 }, ean: { '33': '3760237190130', '75': '3760237190086' } },
+  { id: 'namaste', name: 'Namast\u00E9 Timut', style: 'Blonde \u2022 Baie de Timut', abv: '5.4%', cat: 'blonde', color: '#8B5BA6', img: 'images/Namaste Timut bouteille.webp', medal: '', season: false, prices: { '33u': 1.94, '75u': 3.98, 'f30': 3.90 }, ean: { '33': '3760237190253', '75': '3760237190260' } },
+  { id: 'hopla', name: "Hop'la Weiss", style: 'Blanche \u2022 Weizen', abv: '6.4%', cat: 'speciale', color: '#E8A832', img: 'images/Hop\'la Weiss Blanche bouteille.webp', medal: 'ARGENT Lyon 2024', season: false, prices: { '33u': 1.87, '75u': 3.86, 'f30': 3.85 }, ean: { '33': '3760237190055', '75': '3760237190048' } },
+  { id: 'printaniere', name: 'La Printani\u00E8re', style: 'Blonde \u2022 Cardamome', abv: '5.4%', cat: 'saison', color: '#7B9EC4', img: 'images/La printani\u00E8re bouteille.webp', medal: '', season: true, prices: { '33u': 1.87, '75u': 3.91, 'f30': 3.90 }, ean: { '33': '3760237190123', '75': '3760237190116' } },
+  { id: 'moana', name: 'Moana Beach', style: 'Session IPA', abv: '4.5%', cat: 'ipa', color: '#4AAFC7', img: 'images/Moana Beach Session IPA bouteille.webp', medal: 'ARGENT Lyon 2024', season: false, prices: { '33u': 1.94, '75u': 3.98, 'f30': 3.90 }, ean: { '33': '3760237190215', '75': '3760237190208' } },
+  { id: 'omg', name: 'Oh My Goat', style: 'IPA \u2022 Houblon Mosaic', abv: '6.5%', cat: 'ipa', color: '#D43A6E', img: 'images/Oh My Goat Pale Ale bouteille.webp', medal: 'OR Lyon 2023', season: false, prices: { '33u': 1.94, '75u': 3.98, 'f30': 3.90 }, ean: { '33': '3760237190178', '75': '3760237190161' } },
+  { id: 'amalthee', name: "L'Amalth\u00E9e", style: 'Ambr\u00E9e \u2022 Malts torr\u00E9fi\u00E9s', abv: '6.9%', cat: 'ambree', color: '#C75B2A', img: 'images/L\'Amalth\u00E9e Ambr\u00E9e bouteille.webp', medal: 'ARGENT Lyon 2023', season: false, prices: { '33u': 1.81, '75u': 3.86, 'f30': 3.80 }, ean: { '33': '3760237190031', '75': '3760237190024' } },
+  { id: 'hermine', name: "L'Hermine", style: 'Ambr\u00E9e d\'hiver \u2022 \u00C9pices', abv: '5.8%', cat: 'saison', color: '#C0392B', img: 'images/L\'Hermine \u00C9pices Noel_bouteille.webp', medal: '', season: true, prices: { '33u': 1.87, '75u': 3.91, 'f30': 3.95 }, ean: { '33': '3760237190109', '75': '3760237190185' } },
+  { id: 'boreale', name: "Bor\u00E9'Ale Kveik", style: 'Kveik \u2022 Levure norv\u00E9gienne', abv: '6.1%', cat: 'speciale', color: '#2D7A4F', img: 'images/Boreale Kveik _bouteille.webp', medal: 'OR Lyon 2024', season: false, prices: { '33u': 1.87, '75u': 3.91, 'f30': 3.90 }, ean: { '33': '3760237190277', '75': '3760237190284' } },
+  { id: 'verymad', name: 'Very Mad Triple', style: 'Triple grain \u2022 Cuivr\u00E9e', abv: '8.5%', cat: 'speciale', color: '#D47B2A', img: 'images/Very Mad Triple bouteille.webp', medal: '', season: false, prices: { '33u': 1.94, '75u': 3.98, 'f30': 3.95 }, ean: { '33': '3760237190246', '75': '3760237190239' } },
+  { id: 'slimo', name: 'Slimo', style: 'Limonade artisanale', abv: '', cat: 'limonade', color: '#C9A84C', img: 'images/Slimo_bouteille.webp', medal: '', season: false, prices: { '33u': 1.55, 'f30': 2.10 }, ean: { '33': '3760237190291' } }
 ];
 
 /* Prix HT unitaires ci-dessus. Les prix par lot sont calcul\u00E9s automatiquement */
@@ -1429,8 +1440,7 @@ const FORMATS = [
   { id: '75u', label: '75cl \u2014 Unit\u00E9', short: '75cl x1', mult: 1, base: '75u' },
   { id: '75c', label: '75cl \u2014 Carton de 6', short: '75cl x6', mult: 6, base: '75u' },
   { id: '75c12', label: '75cl \u2014 Caisse de 12 (consign\u00E9e)', short: '75cl x12', mult: 12, base: '75u' },
-  { id: 'f20', label: 'F\u00FBt 20L', short: 'F\u00FBt 20L', mult: 1, base: 'f20', fixedPrice: 85.00 },
-  { id: 'f30', label: 'F\u00FBt 30L', short: 'F\u00FBt 30L', mult: 1, base: 'f30', fixedPrice: 120.00 }
+  { id: 'f30', label: 'F\u00FBt 30L (consign\u00E9 30\u20AC)', short: 'F\u00FBt 30L', mult: 30, base: 'f30' }
 ];
 
 /* Packs sp\u00E9ciaux */
@@ -1464,7 +1474,6 @@ const CATEGORIES = [
 ];
 
 const DEPOSIT_RATES = {
-  'f20': { label: 'F\u00FBt 20L', amount: 30 },
   'f30': { label: 'F\u00FBt 30L', amount: 30 },
   '75c12': { label: 'Caisse 12x75cl', amount: 5 }
 };
@@ -1573,9 +1582,14 @@ function renderProducts() {
         ${availableFormats.map(f => {
           const price = getFormatPrice(p, f);
           const deposit = DEPOSIT_RATES[f.id];
+          const eanKey = f.base === '33u' ? '33' : f.base === '75u' ? '75' : null;
+          const ean = eanKey && p.ean && p.ean[eanKey] ? p.ean[eanKey] : null;
           return `
           <div class="format-row">
-            <span class="format-row__label">${f.label}</span>
+            <div class="format-row__left">
+              <span class="format-row__label">${f.label}</span>
+              ${ean ? `<span class="format-row__ean">EAN ${ean}</span>` : ''}
+            </div>
             <span class="format-row__price">${formatPrice(price)} HT${deposit ? ' + ' + deposit.amount + '\u20AC consigne' : ''}</span>
             <div class="format-row__qty">
               <button class="qty-btn" onclick="changeQty('${p.id}','${f.id}',-1)">&minus;</button>
@@ -1842,13 +1856,32 @@ function renderTarifs() {
         <div class="tarif-card__row"><span class="tarif-card__label">75cl \u2014 Caisse CFP 12</span><span class="tarif-card__price">12 x prix unit. + 5\u20AC consigne</span></div>
       </div>
     </div>
-    <div class="tarif-card">
-      <div class="tarif-card__format"><span class="tarif-card__icon">\uD83C\uDF7A</span> F\u00FBts inox (consign\u00E9s)</div>
+    <div class="tarif-card tarif-card--wide">
+      <div class="tarif-card__format"><span class="tarif-card__icon">\uD83C\uDF7A</span> F\u00FBts 30L inox T\u00EAte A \u2014 Prix/litre HT (consigne 30\u20AC)</div>
       <div class="tarif-card__rows">
-        <div class="tarif-card__row"><span class="tarif-card__label">F\u00FBt 20L</span><span class="tarif-card__price">85.00\u20AC HT + 30\u20AC consigne</span></div>
-        <div class="tarif-card__row"><span class="tarif-card__label">F\u00FBt 30L</span><span class="tarif-card__price">120.00\u20AC HT + 30\u20AC consigne</span></div>
-        <div class="tarif-card__row"><span class="tarif-card__label">Location tireuse</span><span class="tarif-card__price">Sur devis</span></div>
+        <div class="tarif-card__row tarif-card__row--header">
+          <span class="tarif-card__label" style="font-weight:700">Produit</span>
+          <span class="tarif-card__price" style="font-weight:700;min-width:55px">\u20AC/L</span>
+          <span class="tarif-card__price" style="font-weight:700;min-width:70px">F\u00FBt 30L</span>
+        </div>
+        ${PRODUCTS.filter(p => p.prices['f30']).map(p => `
+        <div class="tarif-card__row">
+          <span class="tarif-card__label">${p.name}${p.medal ? ' \uD83C\uDFC5' : ''}${p.season ? ' *' : ''}</span>
+          <span class="tarif-card__price" style="min-width:55px">${p.prices['f30'].toFixed(2)}\u20AC</span>
+          <span class="tarif-card__price" style="min-width:70px">${(p.prices['f30'] * 30).toFixed(2)}\u20AC</span>
+        </div>`).join('')}
       </div>
+    </div>
+    <div class="tarif-card">
+      <div class="tarif-card__format"><span class="tarif-card__icon">\uD83D\uDCC9</span> Remises RFA f\u00FBts (ann\u00E9e calendaire)</div>
+      <div class="tarif-card__rows">
+        <div class="tarif-card__row"><span class="tarif-card__label">1 \u2013 10 f\u00FBts</span><span class="tarif-card__price">Prix de base</span></div>
+        <div class="tarif-card__row"><span class="tarif-card__label">11 \u2013 20 f\u00FBts</span><span class="tarif-card__price">RFA 3%</span></div>
+        <div class="tarif-card__row"><span class="tarif-card__label">21 \u2013 30 f\u00FBts</span><span class="tarif-card__price">RFA 5%</span></div>
+        <div class="tarif-card__row"><span class="tarif-card__label">31 \u2013 40 f\u00FBts</span><span class="tarif-card__price">RFA 7%</span></div>
+        <div class="tarif-card__row"><span class="tarif-card__label">41 \u2013 50 f\u00FBts</span><span class="tarif-card__price">RFA 8%</span></div>
+      </div>
+      <p style="font-size:0.72rem;color:var(--text-muted);margin-top:10px;padding:0 16px;">RFA sous forme d'avoir \u2014 du 1er janv. au 31 d\u00E9c. de l'ann\u00E9e en cours.</p>
     </div>
     <div class="tarif-card">
       <div class="tarif-card__format"><span class="tarif-card__icon">\uD83C\uDF81</span> Packs</div>

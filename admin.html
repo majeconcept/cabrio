@@ -547,19 +547,19 @@ select.field__input { cursor: pointer; }
    DATA (mirrors pro.html)
    ═══════════════════════════════════════════ */
 const PRODUCTS = [
-  { id: 'echappee', name: "L'\u00C9chapp\u00E9e Belle", style: 'Blonde', abv: '5.4%', color: '#5B8C3E', prices: { '33u': 1.76, '75u': 3.75 } },
-  { id: 'honeymoon', name: 'Honeymoon', style: 'Blonde au miel', abv: '6.4%', color: '#E8C94A', prices: { '33u': 1.99, '75u': 4.14 } },
-  { id: 'blossom', name: 'Blossom Therapy', style: 'Blonde', abv: '5.4%', color: '#D65F8A', prices: { '33u': 1.87, '75u': 3.91 } },
-  { id: 'namaste', name: 'Namast\u00E9 Timut', style: 'Blonde', abv: '5.4%', color: '#8B5BA6', prices: { '33u': 1.94, '75u': 3.98 } },
-  { id: 'hopla', name: "Hop'la Weiss", style: 'Blanche', abv: '6.4%', color: '#E8A832', prices: { '33u': 1.87, '75u': 3.86 } },
-  { id: 'printaniere', name: 'La Printani\u00E8re', style: 'Blonde Saisonni\u00E8re', abv: '5.4%', color: '#7B9EC4', prices: { '33u': 1.87, '75u': 3.91 } },
-  { id: 'moana', name: 'Moana Beach', style: 'Session IPA', abv: '4.5%', color: '#4AAFC7', prices: { '33u': 1.94, '75u': 3.98 } },
-  { id: 'omg', name: 'Oh My Goat', style: 'IPA', abv: '6.5%', color: '#D43A6E', prices: { '33u': 1.94, '75u': 3.98 } },
-  { id: 'amalthee', name: "L'Amalth\u00E9e", style: 'Ambr\u00E9e', abv: '6.9%', color: '#C75B2A', prices: { '33u': 1.81, '75u': 3.86 } },
-  { id: 'hermine', name: "L'Hermine", style: 'Ambr\u00E9e Saisonni\u00E8re', abv: '5.8%', color: '#C0392B', prices: { '33u': 1.87, '75u': 3.91 } },
-  { id: 'boreale', name: "Bor\u00E9'Ale Kveik", style: 'Sp\u00E9ciale', abv: '6.1%', color: '#2D7A4F', prices: { '33u': 1.87, '75u': 3.91 } },
-  { id: 'verymad', name: 'Very Mad Triple', style: 'Sp\u00E9ciale', abv: '8.5%', color: '#D47B2A', prices: { '33u': 1.94, '75u': 3.98 } },
-  { id: 'slimo', name: 'Slimo', style: 'Limonade', abv: '', color: '#C9A84C', prices: { '33u': 1.55 } }
+  { id: 'echappee', name: "L'\u00C9chapp\u00E9e Belle", style: 'Blonde', abv: '5.4%', color: '#5B8C3E', prices: { '33u': 1.76, '75u': 3.75, 'f30': 3.70 } },
+  { id: 'honeymoon', name: 'Honeymoon', style: 'Blonde au miel', abv: '6.4%', color: '#E8C94A', prices: { '33u': 1.99, '75u': 4.14, 'f30': 3.95 } },
+  { id: 'blossom', name: 'Blossom Therapy', style: 'Blonde', abv: '5.4%', color: '#D65F8A', prices: { '33u': 1.87, '75u': 3.91, 'f30': 3.90 } },
+  { id: 'namaste', name: 'Namast\u00E9 Timut', style: 'Blonde', abv: '5.4%', color: '#8B5BA6', prices: { '33u': 1.94, '75u': 3.98, 'f30': 3.90 } },
+  { id: 'hopla', name: "Hop'la Weiss", style: 'Blanche', abv: '6.4%', color: '#E8A832', prices: { '33u': 1.87, '75u': 3.86, 'f30': 3.85 } },
+  { id: 'printaniere', name: 'La Printani\u00E8re', style: 'Blonde Saisonni\u00E8re', abv: '5.4%', color: '#7B9EC4', prices: { '33u': 1.87, '75u': 3.91, 'f30': 3.90 } },
+  { id: 'moana', name: 'Moana Beach', style: 'Session IPA', abv: '4.5%', color: '#4AAFC7', prices: { '33u': 1.94, '75u': 3.98, 'f30': 3.90 } },
+  { id: 'omg', name: 'Oh My Goat', style: 'IPA', abv: '6.5%', color: '#D43A6E', prices: { '33u': 1.94, '75u': 3.98, 'f30': 3.90 } },
+  { id: 'amalthee', name: "L'Amalth\u00E9e", style: 'Ambr\u00E9e', abv: '6.9%', color: '#C75B2A', prices: { '33u': 1.81, '75u': 3.86, 'f30': 3.80 } },
+  { id: 'hermine', name: "L'Hermine", style: 'Ambr\u00E9e Saisonni\u00E8re', abv: '5.8%', color: '#C0392B', prices: { '33u': 1.87, '75u': 3.91, 'f30': 3.95 } },
+  { id: 'boreale', name: "Bor\u00E9'Ale Kveik", style: 'Sp\u00E9ciale', abv: '6.1%', color: '#2D7A4F', prices: { '33u': 1.87, '75u': 3.91, 'f30': 3.90 } },
+  { id: 'verymad', name: 'Very Mad Triple', style: 'Sp\u00E9ciale', abv: '8.5%', color: '#D47B2A', prices: { '33u': 1.94, '75u': 3.98, 'f30': 3.95 } },
+  { id: 'slimo', name: 'Slimo', style: 'Limonade', abv: '', color: '#C9A84C', prices: { '33u': 1.55, 'f30': 2.10 } }
 ];
 const FORMATS = [
   { id: '33u', label: '33cl Unit\u00E9', mult: 1, base: '33u' },
@@ -567,11 +567,9 @@ const FORMATS = [
   { id: '75u', label: '75cl Unit\u00E9', mult: 1, base: '75u' },
   { id: '75c', label: '75cl Carton 6', mult: 6, base: '75u' },
   { id: '75c12', label: '75cl Caisse 12', mult: 12, base: '75u' },
-  { id: 'f20', label: 'F\u00FBt 20L', mult: 1, base: 'f20', fixedPrice: 85.00 },
-  { id: 'f30', label: 'F\u00FBt 30L', mult: 1, base: 'f30', fixedPrice: 120.00 }
+  { id: 'f30', label: 'F\u00FBt 30L', mult: 30, base: 'f30' }
 ];
 function getFormatPrice(product, format) {
-  if (format.fixedPrice) return format.fixedPrice;
   const unitPrice = product.prices[format.base];
   if (!unitPrice) return null;
   return +(unitPrice * format.mult).toFixed(2);
@@ -870,8 +868,8 @@ function createOrderFromAdmin(e) {
 
   // Check for deposits
   lines.forEach(l => {
-    if (l.formatId === 'f20' || l.formatId === 'f30' || l.formatId === '75c12') {
-      const type = l.formatId === '75c12' ? 'Caisse 12x75cl' : (l.formatId === 'f20' ? 'F\u00FBt 20L' : 'F\u00FBt 30L');
+    if (l.formatId === 'f30' || l.formatId === '75c12') {
+      const type = l.formatId === '75c12' ? 'Caisse 12x75cl' : 'F\u00FBt 30L';
       const amount = l.formatId === '75c12' ? 5 : 30;
       order.deposits.push({ type, qty: l.qty, amount });
     }
@@ -1199,7 +1197,7 @@ function renderProductsSection() {
     <td style="text-align:center">${FORMATS.length}</td>
   </tr>`).join('')}</tbody></table></div>
   <div style="padding:16px;background:rgba(245,237,216,0.03);border-radius:12px;font-size:0.82rem;color:var(--text-muted)">
-    <strong>Formats disponibles :</strong> ${FORMATS.map(f => f.label + (f.fixedPrice ? ' (' + f.fixedPrice.toFixed(2) + '\u20AC)' : '')).join(' \u2022 ')}
+    <strong>Formats disponibles :</strong> ${FORMATS.map(f => f.label).join(' \u2022 ')}
   </div>`;
 }
 
