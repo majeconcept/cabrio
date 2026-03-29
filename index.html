@@ -707,7 +707,7 @@ ul { list-style: none; }
 }
 
 .beer-card:hover {
-  z-index: 10;
+  z-index: 100;
   transform: translateY(-6px);
   box-shadow: 0 28px 70px color-mix(in srgb, var(--beer-color) 50%, transparent);
 }
@@ -878,6 +878,7 @@ ul { list-style: none; }
 .beer-card:hover .beer-card__reveal,
 .beer-card:focus-within .beer-card__reveal {
   clip-path: inset(0 0 0 0 round 0 0 22px 22px);
+  padding-right: 44%; /* texte à gauche, bouteille à droite */
 }
 
 .beer-card__reveal-name {
@@ -1006,13 +1007,16 @@ ul { list-style: none; }
 .story__badge--alsace {
   background: #fff;
   border-color: rgba(255,255,255,0.2);
-  border-radius: 12px;
-  padding: 6px 10px;
+  border-radius: 50%;
+  padding: 8px;
   gap: 0;
+  width: 68px;
+  height: 68px;
+  justify-content: center;
 }
 .story__badge--alsace img {
-  width: 52px;
-  height: 52px;
+  width: 50px;
+  height: 50px;
   object-fit: contain;
   display: block;
 }
@@ -2083,7 +2087,7 @@ ul { list-style: none; }
       <article class="beer-card reveal reveal-delay-3" data-cat="ipa" data-num="08" style="--beer-color:#D43A6E" aria-label="Oh My Goat">
         <div class="beer-card__visual">
           <div class="beer-card__color-bar"></div>
-          <span class="beer-card__abv">6.5%</span>
+          <span class="beer-card__abv">5.4%</span>
           <img class="beer-card__bottle" src="images/Oh My Goat Pale Ale bouteille.webp" alt="Bouteille Oh My Goat - IPA Mosaic" loading="lazy" width="100" height="180">
         </div>
         <div class="beer-card__body">
@@ -2106,7 +2110,7 @@ ul { list-style: none; }
       <article class="beer-card reveal" data-cat="ambree" data-num="09" style="--beer-color:#C75B2A" aria-label="L'Amalthée">
         <div class="beer-card__visual">
           <div class="beer-card__color-bar"></div>
-          <span class="beer-card__abv">6.9%</span>
+          <span class="beer-card__abv">5.9%</span>
           <img class="beer-card__bottle" src="images/L'Amalthée Ambrée bouteille.webp" alt="Bouteille L'Amalthée - Ambrée aux malts torréfiés" loading="lazy" width="100" height="180">
         </div>
         <div class="beer-card__body">
@@ -2505,7 +2509,7 @@ ul { list-style: none; }
     </div>
   </div>
   <div class="footer__bottom">
-    <p class="footer__copy">&copy; 2024 Brasserie CABRIO. Tous droits r&eacute;serv&eacute;s.</p>
+    <p class="footer__copy">&copy; 2026 Brasserie CABRIO. Tous droits r&eacute;serv&eacute;s.</p>
     <p class="footer__legal">
       <a href="#" class="footer__link">Mentions l&eacute;gales</a> &bull;
       <a href="#" class="footer__link">Politique de confidentialit&eacute;</a> &bull;
