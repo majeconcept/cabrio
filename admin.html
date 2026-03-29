@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="CABRIO Admin - Gestion des commandes, clients et consignes">
+<meta name="theme-color" content="#1A1714">
+<title>CABRIO Admin - ERP/CRM</title>
+<link rel="icon" type="image/svg+xml" href="images/FAVICON.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --cream: #F5EDD8;
+  --cream-dark: #E8DFC8;
+  --amber: #D4881C;
+  --amber-light: #E8A832;
+  --gold: #C9A84C;
+  --green: #2D5A3D;
+  --green-light: #5B8C3E;
+  --dark: #1A1714;
+  --dark-warm: #2A2520;
+  --dark-card: #332E28;
+  --pink: #D43A6E;
+  --blue: #4AAFC7;
+  --copper: #C75B2A;
+  --purple: #8B5BA6;
+  --red: #C0392B;
+  --lavender: #7B9EC4;
+  --text-dark: #2C2416;
+  --text-light: #F5EDD8;
+  --text-muted: #8A7E6E;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --nav-height: 64px;
+  --sidebar-width: 240px;
+  --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--dark);
+  color: var(--cream);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; height: auto; display: block; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+::selection { background: var(--amber); color: var(--dark); }
+
+/* ═══════════════════════════════════════════
+   AUTH
+   ═══════════════════════════════════════════ */
+.auth-gate {
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(26,23,20,0.98);
+  backdrop-filter: blur(20px);
+  padding: 24px;
+}
+.auth-gate[hidden] { display: none; }
+.auth-gate__card {
+  background: var(--dark-card);
+  border: 1px solid rgba(245,237,216,0.08);
+  border-radius: 20px;
+  padding: 40px 36px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+.auth-gate__logo { width: 48px; height: 48px; margin: 0 auto 12px; opacity: 0.6; }
+.auth-gate__title { font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; margin-bottom: 6px; }
+.auth-gate__sub { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 24px; }
+.auth-gate__input {
+  width: 100%; padding: 12px 16px;
+  background: rgba(245,237,216,0.06);
+  border: 1px solid rgba(245,237,216,0.12);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  text-align: center;
+  letter-spacing: 0.1em;
+  margin-bottom: 12px;
+  transition: border-color 0.3s;
+}
+.auth-gate__input:focus { outline: none; border-color: var(--amber); }
+.auth-gate__btn {
+  width: 100%; padding: 12px;
+  background: var(--amber); color: var(--dark);
+  font-weight: 700; border-radius: 100px;
+  transition: background 0.3s;
+}
+.auth-gate__btn:hover { background: var(--amber-light); }
+.auth-gate__error { color: var(--red); font-size: 0.8rem; margin-top: 10px; display: none; }
+.auth-gate__error.show { display: block; }
+
+/* ═══════════════════════════════════════════
+   LAYOUT
+   ═══════════════════════════════════════════ */
+.app { display: none; }
+.app--visible { display: flex; min-height: 100vh; }
+
+/* Sidebar */
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--dark-warm);
+  border-right: 1px solid rgba(245,237,216,0.06);
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  transition: transform 0.3s;
+}
+.sidebar__brand {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid rgba(245,237,216,0.06);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sidebar__brand img { width: 28px; opacity: 0.7; }
+.sidebar__brand-text { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 0.08em; }
+.sidebar__badge {
+  font-family: var(--font-body); font-size: 0.55rem; font-weight: 700;
+  background: var(--red); color: #fff;
+  padding: 2px 6px; border-radius: 100px;
+}
+.sidebar__nav { flex: 1; padding: 12px 8px; overflow-y: auto; }
+.sidebar__link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; border-radius: 10px;
+  font-size: 0.85rem; font-weight: 500;
+  color: rgba(245,237,216,0.55);
+  transition: all 0.2s;
+  margin-bottom: 2px;
+}
+.sidebar__link:hover { background: rgba(245,237,216,0.04); color: var(--cream); }
+.sidebar__link--active { background: rgba(212,136,28,0.12); color: var(--amber); }
+.sidebar__link-icon { font-size: 1.1rem; width: 24px; text-align: center; }
+.sidebar__link-badge {
+  margin-left: auto;
+  background: var(--amber);
+  color: var(--dark);
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 100px;
+}
+.sidebar__footer {
+  padding: 12px 16px;
+  border-top: 1px solid rgba(245,237,216,0.06);
+}
+.sidebar__footer a {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  display: flex; align-items: center; gap: 8px;
+  transition: color 0.2s;
+}
+.sidebar__footer a:hover { color: var(--cream); }
+
+/* Main content */
+.main {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  padding: 24px 32px 48px;
+  min-height: 100vh;
+}
+.main__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.main__title { font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; }
+.main__actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* Mobile burger */
+.mobile-burger {
+  display: none;
+  position: fixed; top: 16px; left: 16px; z-index: 200;
+  width: 40px; height: 40px;
+  background: var(--dark-card);
+  border: 1px solid rgba(245,237,216,0.1);
+  border-radius: 10px;
+  align-items: center; justify-content: center;
+  font-size: 1.2rem;
+}
+.mobile-overlay {
+  display: none; position: fixed; inset: 0; z-index: 99;
+  background: rgba(0,0,0,0.5);
+}
+.mobile-overlay.open { display: block; }
+
+/* ═══════════════════════════════════════════
+   COMMON COMPONENTS
+   ═══════════════════════════════════════════ */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 18px; border-radius: 100px;
+  font-size: 0.82rem; font-weight: 600;
+  transition: all 0.2s;
+}
+.btn--primary { background: var(--amber); color: var(--dark); }
+.btn--primary:hover { background: var(--amber-light); }
+.btn--outline {
+  border: 1px solid rgba(245,237,216,0.2); color: var(--cream);
+}
+.btn--outline:hover { border-color: var(--amber); color: var(--amber); }
+.btn--danger { background: rgba(192,57,43,0.15); color: var(--red); }
+.btn--danger:hover { background: rgba(192,57,43,0.25); }
+.btn--sm { padding: 5px 12px; font-size: 0.75rem; }
+.btn--icon { width: 32px; height: 32px; padding: 0; justify-content: center; border-radius: 8px; }
+
+/* Stats cards */
+.stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 28px; }
+.stat-card {
+  background: var(--dark-card);
+  border: 1px solid rgba(245,237,216,0.06);
+  border-radius: 14px;
+  padding: 18px 20px;
+}
+.stat-card__label { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+.stat-card__value { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; }
+.stat-card__value--amber { color: var(--amber); }
+.stat-card__value--green { color: var(--green-light); }
+.stat-card__value--blue { color: var(--blue); }
+.stat-card__value--red { color: var(--red); }
+.stat-card__sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+
+/* Tables */
+.table-wrap {
+  background: var(--dark-card);
+  border: 1px solid rgba(245,237,216,0.06);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.table-wrap__header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(245,237,216,0.06);
+  flex-wrap: wrap; gap: 12px;
+}
+.table-wrap__title { font-weight: 700; font-size: 0.95rem; }
+.dtable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+.dtable th {
+  text-align: left; padding: 12px 16px;
+  font-size: 0.7rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-muted);
+  border-bottom: 1px solid rgba(245,237,216,0.08);
+}
+.dtable td {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(245,237,216,0.04);
+  vertical-align: middle;
+}
+.dtable tr:last-child td { border: none; }
+.dtable tr:hover td { background: rgba(245,237,216,0.02); }
+
+/* Status badges */
+.badge {
+  display: inline-block;
+  font-size: 0.68rem; font-weight: 700;
+  padding: 3px 10px; border-radius: 100px;
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.badge--pending { background: rgba(232,168,50,0.15); color: var(--amber-light); }
+.badge--confirmed { background: rgba(93,140,62,0.15); color: var(--green-light); }
+.badge--shipping { background: rgba(74,175,199,0.15); color: var(--blue); }
+.badge--delivered { background: rgba(93,140,62,0.25); color: var(--green-light); }
+.badge--active { background: rgba(74,175,199,0.15); color: var(--blue); }
+.badge--returned { background: rgba(93,140,62,0.15); color: var(--green-light); }
+
+/* Modal */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 500;
+  background: rgba(26,23,20,0.9);
+  backdrop-filter: blur(8px);
+  align-items: center; justify-content: center;
+  padding: 24px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--dark-card);
+  border: 1px solid rgba(245,237,216,0.1);
+  border-radius: 18px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.modal__header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(245,237,216,0.06);
+}
+.modal__title { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; }
+.modal__close { font-size: 1.3rem; padding: 4px; }
+.modal__body { padding: 20px 24px; }
+.modal__footer {
+  padding: 16px 24px;
+  border-top: 1px solid rgba(245,237,216,0.06);
+  display: flex; gap: 10px; justify-content: flex-end;
+}
+
+/* Form fields */
+.field { margin-bottom: 14px; }
+.field__label { font-size: 0.78rem; font-weight: 600; margin-bottom: 6px; display: block; }
+.field__input {
+  width: 100%; padding: 10px 14px;
+  background: rgba(245,237,216,0.05);
+  border: 1px solid rgba(245,237,216,0.1);
+  border-radius: 10px;
+  font-size: 0.85rem;
+  transition: border-color 0.3s;
+}
+.field__input:focus { outline: none; border-color: var(--amber); }
+.field__input::placeholder { color: var(--text-muted); }
+select.field__input { cursor: pointer; }
+
+/* Empty state */
+.empty-state { text-align: center; padding: 60px 24px; color: var(--text-muted); }
+.empty-state__icon { font-size: 2.5rem; margin-bottom: 12px; opacity: 0.3; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; z-index: 9000;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--dark-card);
+  border: 1px solid rgba(245,237,216,0.12);
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-size: 0.85rem; font-weight: 600;
+  opacity: 0;
+  transition: transform 0.4s var(--ease-out), opacity 0.4s;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.toast--show { transform: translateX(-50%) translateY(0); opacity: 1; }
+.toast--success { border-color: rgba(93,140,62,0.3); color: var(--green-light); }
+.toast--error { border-color: rgba(192,57,43,0.3); color: var(--red); }
+
+/* Sections */
+.section { display: none; }
+.section--active { display: block; }
+
+/* Search */
+.search-bar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px;
+  background: rgba(245,237,216,0.05);
+  border: 1px solid rgba(245,237,216,0.1);
+  border-radius: 10px;
+  max-width: 280px;
+}
+.search-bar__input {
+  flex: 1; border: none; background: none;
+  font-size: 0.82rem; color: var(--cream);
+}
+.search-bar__input::placeholder { color: var(--text-muted); }
+.search-bar__input:focus { outline: none; }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; padding: 72px 16px 40px; }
+  .mobile-burger { display: flex; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .stats { grid-template-columns: 1fr; }
+  .dtable { font-size: 0.75rem; }
+  .dtable th, .dtable td { padding: 10px 10px; }
+  .main__header { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- AUTH -->
+<div class="auth-gate" id="authGate">
+  <div class="auth-gate__card">
+    <img class="auth-gate__logo" src="images/FAVICON.svg" alt="CABRIO">
+    <h1 class="auth-gate__title">CABRIO Admin</h1>
+    <p class="auth-gate__sub">Acc&egrave;s r&eacute;serv&eacute; &agrave; l'&eacute;quipe brasserie</p>
+    <form onsubmit="handleAdminAuth(event)">
+      <input class="auth-gate__input" type="password" id="adminCode" placeholder="Mot de passe admin" required>
+      <button class="auth-gate__btn" type="submit">Connexion</button>
+    </form>
+    <p class="auth-gate__error" id="authError">Mot de passe incorrect.</p>
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div class="app" id="app">
+
+  <!-- Mobile burger -->
+  <button class="mobile-burger" onclick="toggleSidebar()">&#9776;</button>
+  <div class="mobile-overlay" id="mobileOverlay" onclick="toggleSidebar()"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__brand">
+      <img src="images/FAVICON.svg" alt="">
+      <span class="sidebar__brand-text">CABRIO</span>
+      <span class="sidebar__badge">ADMIN</span>
+    </div>
+    <nav class="sidebar__nav">
+      <a class="sidebar__link sidebar__link--active" href="#" data-section="dashboard" onclick="switchSection('dashboard',this)">
+        <span class="sidebar__link-icon">&#128202;</span> Tableau de bord
+      </a>
+      <a class="sidebar__link" href="#" data-section="orders" onclick="switchSection('orders',this)">
+        <span class="sidebar__link-icon">&#128230;</span> Commandes
+        <span class="sidebar__link-badge" id="ordersBadge">0</span>
+      </a>
+      <a class="sidebar__link" href="#" data-section="clients" onclick="switchSection('clients',this)">
+        <span class="sidebar__link-icon">&#128101;</span> Clients
+      </a>
+      <a class="sidebar__link" href="#" data-section="deposits" onclick="switchSection('deposits',this)">
+        <span class="sidebar__link-icon">&#9851;</span> Consignes
+      </a>
+      <a class="sidebar__link" href="#" data-section="deliveries" onclick="switchSection('deliveries',this)">
+        <span class="sidebar__link-icon">&#128666;</span> Livraisons
+      </a>
+      <a class="sidebar__link" href="#" data-section="products" onclick="switchSection('products',this)">
+        <span class="sidebar__link-icon">&#127866;</span> Produits
+      </a>
+    </nav>
+    <div class="sidebar__footer">
+      <a href="index.html">&#8592; Site principal</a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main">
+
+    <!-- ═══ DASHBOARD ═══ -->
+    <div class="section section--active" id="section-dashboard">
+      <div class="main__header">
+        <h1 class="main__title">Tableau de bord</h1>
+        <div class="main__actions">
+          <button class="btn btn--primary" onclick="switchSection('orders',document.querySelector('[data-section=orders]'))">&#43; Nouvelle commande</button>
+          <button class="btn btn--outline" onclick="exportAllData()">&#128229; Exporter</button>
+        </div>
+      </div>
+      <div class="stats" id="dashStats"></div>
+      <div class="table-wrap">
+        <div class="table-wrap__header">
+          <span class="table-wrap__title">Derni&egrave;res commandes</span>
+        </div>
+        <div id="dashRecentOrders"></div>
+      </div>
+    </div>
+
+    <!-- ═══ ORDERS ═══ -->
+    <div class="section" id="section-orders">
+      <div class="main__header">
+        <h1 class="main__title">Commandes</h1>
+        <div class="main__actions">
+          <div class="search-bar">
+            <span>&#128269;</span>
+            <input class="search-bar__input" type="text" placeholder="Rechercher..." oninput="filterOrders(this.value)">
+          </div>
+          <button class="btn btn--primary" onclick="openNewOrderModal()">&#43; Saisir commande</button>
+          <button class="btn btn--outline" onclick="exportOrders()">&#128229; CSV</button>
+        </div>
+      </div>
+      <div id="ordersContent"></div>
+    </div>
+
+    <!-- ═══ CLIENTS ═══ -->
+    <div class="section" id="section-clients">
+      <div class="main__header">
+        <h1 class="main__title">Clients</h1>
+        <div class="main__actions">
+          <div class="search-bar">
+            <span>&#128269;</span>
+            <input class="search-bar__input" type="text" placeholder="Rechercher client..." oninput="filterClients(this.value)">
+          </div>
+          <button class="btn btn--primary" onclick="openNewClientModal()">&#43; Nouveau client</button>
+        </div>
+      </div>
+      <div id="clientsContent"></div>
+    </div>
+
+    <!-- ═══ DEPOSITS ═══ -->
+    <div class="section" id="section-deposits">
+      <div class="main__header">
+        <h1 class="main__title">Consignes</h1>
+        <div class="main__actions">
+          <button class="btn btn--outline" onclick="openReturnDepositModal()">&#9851; Enregistrer retour</button>
+        </div>
+      </div>
+      <div class="stats" id="depositStats"></div>
+      <div id="depositsContent"></div>
+    </div>
+
+    <!-- ═══ DELIVERIES ═══ -->
+    <div class="section" id="section-deliveries">
+      <div class="main__header">
+        <h1 class="main__title">Livraisons</h1>
+        <div class="main__actions">
+          <button class="btn btn--primary" onclick="openNewDeliveryModal()">&#43; Planifier livraison</button>
+        </div>
+      </div>
+      <div id="deliveriesContent"></div>
+    </div>
+
+    <!-- ═══ PRODUCTS ═══ -->
+    <div class="section" id="section-products">
+      <div class="main__header">
+        <h1 class="main__title">Produits</h1>
+      </div>
+      <div id="productsContent"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════
+   DATA (mirrors pro.html)
+   ═══════════════════════════════════════════ */
+const PRODUCTS = [
+  { id: 'echappee', name: "L'\u00C9chapp\u00E9e Belle", style: 'Blonde', abv: '5.4%', color: '#5B8C3E' },
+  { id: 'honeymoon', name: 'Honeymoon', style: 'Blonde au miel', abv: '6.4%', color: '#E8C94A' },
+  { id: 'blossom', name: 'Blossom Therapy', style: 'Blonde', abv: '5.4%', color: '#D65F8A' },
+  { id: 'namaste', name: 'Namast\u00E9 Timut', style: 'Blonde', abv: '5.4%', color: '#8B5BA6' },
+  { id: 'hopla', name: "Hop'la Weiss", style: 'Blanche', abv: '6.4%', color: '#E8A832' },
+  { id: 'printaniere', name: 'La Printani\u00E8re', style: 'Blonde Saisonni\u00E8re', abv: '5.4%', color: '#7B9EC4' },
+  { id: 'moana', name: 'Moana Beach', style: 'Session IPA', abv: '4.5%', color: '#4AAFC7' },
+  { id: 'omg', name: 'Oh My Goat', style: 'IPA', abv: '6.5%', color: '#D43A6E' },
+  { id: 'amalthee', name: "L'Amalth\u00E9e", style: 'Ambr\u00E9e', abv: '6.9%', color: '#C75B2A' },
+  { id: 'hermine', name: "L'Hermine", style: 'Ambr\u00E9e Saisonni\u00E8re', abv: '5.8%', color: '#C0392B' },
+  { id: 'boreale', name: "Bor\u00E9'Ale Kveik", style: 'Sp\u00E9ciale', abv: '6.1%', color: '#2D7A4F' },
+  { id: 'verymad', name: 'Very Mad Triple', style: 'Sp\u00E9ciale', abv: '8.5%', color: '#D47B2A' },
+  { id: 'slimo', name: 'Slimo', style: 'Limonade', abv: '', color: '#C9A84C' }
+];
+const FORMATS = [
+  { id: '33u', label: '33cl Unit\u00E9', price: 2.20 },
+  { id: '33c', label: '33cl Carton 12', price: 24.00 },
+  { id: '75u', label: '75cl Unit\u00E9', price: 4.80 },
+  { id: '75c', label: '75cl Carton 6', price: 26.40 },
+  { id: 'f20', label: 'F\u00FBt 20L', price: 85.00 },
+  { id: 'f30', label: 'F\u00FBt 30L', price: 120.00 }
+];
+const STATUS_LABELS = { pending: 'En attente', confirmed: 'Confirm\u00E9e', shipping: 'En livraison', delivered: 'Livr\u00E9e' };
+const DEPOSIT_LABELS = { active: 'En cours', returned: 'Retourn\u00E9e' };
+
+/* ═══════════════════════════════════════════
+   LOCAL STORAGE
+   ═══════════════════════════════════════════ */
+function getStore(key, def) { try { return JSON.parse(localStorage.getItem('cabrio_admin_' + key) || JSON.stringify(def)); } catch(e) { return def; } }
+function setStore(key, val) { localStorage.setItem('cabrio_admin_' + key, JSON.stringify(val)); }
+
+function getOrders() { return getStore('orders', []); }
+function saveOrders(o) { setStore('orders', o); }
+function getClients() { return getStore('clients', []); }
+function saveClients(c) { setStore('clients', c); }
+function getDeposits() { return getStore('deposits', []); }
+function saveDeposits(d) { setStore('deposits', d); }
+function getDeliveries() { return getStore('deliveries', []); }
+function saveDeliveries(d) { setStore('deliveries', d); }
+
+/* ═══════════════════════════════════════════
+   AUTH
+   ═══════════════════════════════════════════ */
+function handleAdminAuth(e) {
+  e.preventDefault();
+  const code = document.getElementById('adminCode').value;
+  if (code === 'CABRIO-ADMIN-2024' || code === 'admin') {
+    sessionStorage.setItem('cabrio_admin_auth', '1');
+    document.getElementById('authGate').hidden = true;
+    document.getElementById('app').classList.add('app--visible');
+    initAdmin();
+  } else {
+    document.getElementById('authError').classList.add('show');
+    setTimeout(() => document.getElementById('authError').classList.remove('show'), 2000);
+  }
+}
+if (sessionStorage.getItem('cabrio_admin_auth')) {
+  document.getElementById('authGate').hidden = true;
+  document.getElementById('app').classList.add('app--visible');
+  setTimeout(initAdmin, 0);
+}
+
+/* ═══════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════ */
+function initAdmin() {
+  renderDashboard();
+  renderOrders();
+  renderClients();
+  renderDepositsSection();
+  renderDeliveries();
+  renderProductsSection();
+}
+
+/* ═══════════════════════════════════════════
+   NAVIGATION
+   ═══════════════════════════════════════════ */
+function switchSection(name, link) {
+  if (link) { link.preventDefault && link.preventDefault(); }
+  document.querySelectorAll('.section').forEach(s => s.classList.toggle('section--active', s.id === 'section-' + name));
+  document.querySelectorAll('.sidebar__link').forEach(l => l.classList.toggle('sidebar__link--active', l.dataset.section === name));
+  // Mobile: close sidebar
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('mobileOverlay').classList.remove('open');
+  return false;
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('mobileOverlay').classList.toggle('open');
+}
+
+/* ═══════════════════════════════════════════
+   DASHBOARD
+   ═══════════════════════════════════════════ */
+function renderDashboard() {
+  const orders = getOrders();
+  const clients = getClients();
+  const deposits = getDeposits();
+  const pending = orders.filter(o => o.status === 'pending').length;
+  const totalRevenue = orders.reduce((s, o) => {
+    return s + (o.lines || []).reduce((ls, l) => {
+      const f = FORMATS.find(f => f.id === l.formatId);
+      return ls + (f ? f.price * l.qty : 0);
+    }, 0);
+  }, 0);
+  const activeDeposits = deposits.filter(d => d.status === 'active');
+  const depositTotal = activeDeposits.reduce((s, d) => s + (d.amount * d.qty), 0);
+
+  document.getElementById('ordersBadge').textContent = pending;
+  document.getElementById('dashStats').innerHTML = `
+    <div class="stat-card"><div class="stat-card__label">Commandes totales</div><div class="stat-card__value stat-card__value--amber">${orders.length}</div></div>
+    <div class="stat-card"><div class="stat-card__label">En attente</div><div class="stat-card__value stat-card__value--red">${pending}</div><div class="stat-card__sub">commande(s) \u00E0 traiter</div></div>
+    <div class="stat-card"><div class="stat-card__label">Clients actifs</div><div class="stat-card__value stat-card__value--green">${clients.length}</div></div>
+    <div class="stat-card"><div class="stat-card__label">CA estim\u00E9</div><div class="stat-card__value stat-card__value--amber">${totalRevenue.toFixed(0)}\u20AC</div><div class="stat-card__sub">HT</div></div>
+    <div class="stat-card"><div class="stat-card__label">Consignes actives</div><div class="stat-card__value stat-card__value--blue">${activeDeposits.length}</div><div class="stat-card__sub">${depositTotal}\u20AC en consigne</div></div>
+  `;
+
+  // Recent orders
+  const recent = orders.slice(0, 5);
+  if (recent.length === 0) {
+    document.getElementById('dashRecentOrders').innerHTML = '<div class="empty-state"><div class="empty-state__icon">&#128230;</div><p>Aucune commande. Saisissez votre premi\u00E8re commande ou attendez une commande client.</p></div>';
+    return;
+  }
+  document.getElementById('dashRecentOrders').innerHTML = `<table class="dtable"><thead><tr><th>R\u00E9f</th><th>Client</th><th>Date</th><th>Lignes</th><th>Statut</th><th></th></tr></thead><tbody>${recent.map(o => `
+    <tr>
+      <td style="font-weight:600">${o.id}</td>
+      <td>${o.company || '-'}</td>
+      <td>${new Date(o.date).toLocaleDateString('fr-FR')}</td>
+      <td>${(o.lines||[]).length} ligne(s)</td>
+      <td><span class="badge badge--${o.status}">${STATUS_LABELS[o.status]||o.status}</span></td>
+      <td><button class="btn btn--sm btn--outline" onclick="viewOrder('${o.id}')">Voir</button></td>
+    </tr>
+  `).join('')}</tbody></table>`;
+}
+
+/* ═══════════════════════════════════════════
+   ORDERS
+   ═══════════════════════════════════════════ */
+let orderFilter = '';
+function filterOrders(q) { orderFilter = q.toLowerCase(); renderOrders(); }
+
+function renderOrders() {
+  const orders = getOrders().filter(o => {
+    if (!orderFilter) return true;
+    return (o.id + ' ' + o.company + ' ' + o.contact + ' ' + o.status).toLowerCase().includes(orderFilter);
+  });
+  const el = document.getElementById('ordersContent');
+  if (orders.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-state__icon">&#128230;</div><p>Aucune commande trouv\u00E9e.</p></div>';
+    return;
+  }
+  el.innerHTML = `<div class="table-wrap"><table class="dtable"><thead><tr><th>R\u00E9f</th><th>Client</th><th>Contact</th><th>Date</th><th>Lignes</th><th>Montant</th><th>Statut</th><th>Actions</th></tr></thead><tbody>${orders.map(o => {
+    const amount = (o.lines||[]).reduce((s,l) => { const f = FORMATS.find(f => f.id === l.formatId); return s + (f ? f.price * l.qty : 0); }, 0);
+    return `<tr>
+      <td style="font-weight:600">${o.id}</td>
+      <td>${o.company || '-'}</td>
+      <td style="font-size:0.78rem">${o.contact || '-'}<br><span style="color:var(--text-muted)">${o.email || ''}</span></td>
+      <td>${new Date(o.date).toLocaleDateString('fr-FR')}</td>
+      <td>${(o.lines||[]).length}</td>
+      <td style="font-weight:600;color:var(--amber)">${amount.toFixed(2)}\u20AC</td>
+      <td><span class="badge badge--${o.status}">${STATUS_LABELS[o.status]||o.status}</span></td>
+      <td><button class="btn btn--sm btn--outline" onclick="viewOrder('${o.id}')">D\u00E9tail</button></td>
+    </tr>`;
+  }).join('')}</tbody></table></div>`;
+}
+
+function viewOrder(id) {
+  const orders = getOrders();
+  const o = orders.find(x => x.id === id);
+  if (!o) return;
+  const amount = (o.lines||[]).reduce((s,l) => { const f = FORMATS.find(f => f.id === l.formatId); return s + (f ? f.price * l.qty : 0); }, 0);
+  openModal(`
+    <div class="modal__header"><h2 class="modal__title">Commande ${o.id}</h2><button class="modal__close" onclick="closeModal()">&times;</button></div>
+    <div class="modal__body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px">
+        <div><div style="font-size:0.72rem;color:var(--text-muted)">Client</div><div style="font-weight:600">${o.company||'-'}</div></div>
+        <div><div style="font-size:0.72rem;color:var(--text-muted)">Contact</div><div>${o.contact||'-'}</div></div>
+        <div><div style="font-size:0.72rem;color:var(--text-muted)">Email</div><div>${o.email||'-'}</div></div>
+        <div><div style="font-size:0.72rem;color:var(--text-muted)">T\u00E9l\u00E9phone</div><div>${o.phone||'-'}</div></div>
+        <div><div style="font-size:0.72rem;color:var(--text-muted)">Date</div><div>${new Date(o.date).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}</div></div>
+        <div><div style="font-size:0.72rem;color:var(--text-muted)">Statut</div><span class="badge badge--${o.status}">${STATUS_LABELS[o.status]}</span></div>
+      </div>
+      <div style="font-weight:700;margin-bottom:10px">D\u00E9tail</div>
+      <table class="dtable"><thead><tr><th>Produit</th><th>Format</th><th>Qt\u00E9</th><th>Montant</th></tr></thead><tbody>
+      ${(o.lines||[]).map(l => {
+        const p = PRODUCTS.find(x => x.id === l.productId);
+        const f = FORMATS.find(x => x.id === l.formatId);
+        const lAmount = f ? f.price * l.qty : 0;
+        return `<tr><td>${p?p.name:l.productId}</td><td>${f?f.label:l.formatId}</td><td>x${l.qty}</td><td style="color:var(--amber);font-weight:600">${lAmount.toFixed(2)}\u20AC</td></tr>`;
+      }).join('')}
+      </tbody></table>
+      <div style="text-align:right;margin-top:12px;font-size:1rem;font-weight:700;color:var(--amber)">Total : ${amount.toFixed(2)}\u20AC HT</div>
+      ${o.notes ? '<div style="margin-top:14px;padding:12px;background:rgba(245,237,216,0.04);border-radius:10px;font-size:0.82rem"><strong>Notes :</strong> '+o.notes+'</div>' : ''}
+    </div>
+    <div class="modal__footer">
+      <select class="field__input" style="width:auto" onchange="updateOrderStatus('${o.id}',this.value)">
+        ${Object.keys(STATUS_LABELS).map(s => `<option value="${s}" ${o.status===s?'selected':''}>${STATUS_LABELS[s]}</option>`).join('')}
+      </select>
+      <button class="btn btn--danger btn--sm" onclick="if(confirm('Supprimer cette commande ?')){deleteOrder('${o.id}')}">Supprimer</button>
+    </div>
+  `);
+}
+
+function updateOrderStatus(id, status) {
+  const orders = getOrders();
+  const o = orders.find(x => x.id === id);
+  if (o) { o.status = status; saveOrders(orders); renderOrders(); renderDashboard(); showToast('Statut mis \u00E0 jour', 'success'); }
+}
+
+function deleteOrder(id) {
+  let orders = getOrders();
+  orders = orders.filter(o => o.id !== id);
+  saveOrders(orders);
+  closeModal();
+  renderOrders();
+  renderDashboard();
+  showToast('Commande supprim\u00E9e', 'success');
+}
+
+function openNewOrderModal() {
+  const clients = getClients();
+  openModal(`
+    <div class="modal__header"><h2 class="modal__title">Nouvelle commande</h2><button class="modal__close" onclick="closeModal()">&times;</button></div>
+    <div class="modal__body">
+      <form id="newOrderForm" onsubmit="createOrderFromAdmin(event)">
+        <div class="field">
+          <label class="field__label">Client</label>
+          <select class="field__input" name="clientId" required>
+            <option value="">S\u00E9lectionner un client...</option>
+            ${clients.map(c => `<option value="${c.id}">${c.company} (${c.contact})</option>`).join('')}
+            <option value="__new">+ Nouveau client</option>
+          </select>
+        </div>
+        <div id="newOrderLines">
+          <div style="font-weight:700;margin-bottom:10px">Lignes de commande</div>
+          <div id="orderLineRows"></div>
+          <button type="button" class="btn btn--outline btn--sm" onclick="addOrderLineRow()" style="margin-top:8px">&#43; Ajouter ligne</button>
+        </div>
+        <div class="field" style="margin-top:14px">
+          <label class="field__label">Notes</label>
+          <textarea class="field__input" name="notes" rows="2" placeholder="Instructions sp\u00E9ciales..."></textarea>
+        </div>
+        <div class="modal__footer" style="padding:16px 0 0;border:none">
+          <button type="button" class="btn btn--outline" onclick="closeModal()">Annuler</button>
+          <button type="submit" class="btn btn--primary">Cr\u00E9er la commande</button>
+        </div>
+      </form>
+    </div>
+  `);
+  addOrderLineRow();
+}
+
+function addOrderLineRow() {
+  const container = document.getElementById('orderLineRows');
+  const idx = container.children.length;
+  const div = document.createElement('div');
+  div.style.cssText = 'display:grid;grid-template-columns:1fr 1fr 80px 32px;gap:8px;margin-bottom:8px;align-items:end';
+  div.innerHTML = `
+    <select class="field__input" name="product_${idx}" required>
+      <option value="">Produit...</option>
+      ${PRODUCTS.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
+    </select>
+    <select class="field__input" name="format_${idx}" required>
+      <option value="">Format...</option>
+      ${FORMATS.map(f => `<option value="${f.id}">${f.label}</option>`).join('')}
+    </select>
+    <input class="field__input" type="number" name="qty_${idx}" min="1" value="1" required style="text-align:center">
+    <button type="button" class="btn btn--icon btn--danger" onclick="this.parentElement.remove()">&times;</button>
+  `;
+  container.appendChild(div);
+}
+
+function createOrderFromAdmin(e) {
+  e.preventDefault();
+  const form = e.target;
+  const fd = new FormData(form);
+  const clientId = fd.get('clientId');
+  const clients = getClients();
+  const client = clients.find(c => c.id === clientId) || {};
+
+  const lines = [];
+  const rows = document.getElementById('orderLineRows').children;
+  for (let i = 0; i < rows.length; i++) {
+    const pid = fd.get('product_' + i);
+    const fid = fd.get('format_' + i);
+    const qty = parseInt(fd.get('qty_' + i)) || 0;
+    if (pid && fid && qty > 0) lines.push({ productId: pid, formatId: fid, qty });
+  }
+  if (lines.length === 0) { showToast('Ajoutez au moins une ligne', 'error'); return; }
+
+  const now = new Date();
+  const order = {
+    id: 'CMD-' + now.getFullYear() + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0') + '-' + String(now.getHours()).padStart(2,'0') + String(now.getMinutes()).padStart(2,'0') + String(now.getSeconds()).padStart(2,'0'),
+    date: now.toISOString(),
+    company: client.company || 'Saisie interne',
+    contact: client.contact || '',
+    email: client.email || '',
+    phone: client.phone || '',
+    notes: fd.get('notes') || '',
+    lines,
+    status: 'confirmed',
+    deposits: []
+  };
+
+  // Check for deposits
+  lines.forEach(l => {
+    if (l.formatId === 'f20' || l.formatId === 'f30' || l.formatId === '75c') {
+      const type = l.formatId === '75c' ? 'Caisse 12x75cl' : (l.formatId === 'f20' ? 'F\u00FBt 20L' : 'F\u00FBt 30L');
+      const amount = l.formatId === '75c' ? 5 : 30;
+      order.deposits.push({ type, qty: l.qty, amount });
+    }
+  });
+
+  const orders = getOrders();
+  orders.unshift(order);
+  saveOrders(orders);
+
+  // Save deposits
+  if (order.deposits.length > 0) {
+    const deps = getDeposits();
+    order.deposits.forEach(d => {
+      deps.push({
+        orderId: order.id,
+        clientId: clientId,
+        company: order.company,
+        date: now.toISOString(),
+        type: d.type,
+        qty: d.qty,
+        amount: d.amount,
+        status: 'active'
+      });
+    });
+    saveDeposits(deps);
+  }
+
+  closeModal();
+  renderOrders();
+  renderDashboard();
+  renderDepositsSection();
+  showToast('Commande cr\u00E9\u00E9e : ' + order.id, 'success');
+}
+
+function exportOrders() {
+  const orders = getOrders();
+  let csv = 'R\u00E9f;Date;Client;Contact;Email;T\u00E9l;Statut;Lignes;Montant HT\n';
+  orders.forEach(o => {
+    const amount = (o.lines||[]).reduce((s,l)=>{const f=FORMATS.find(x=>x.id===l.formatId);return s+(f?f.price*l.qty:0);},0);
+    csv += `${o.id};${new Date(o.date).toLocaleDateString('fr-FR')};${o.company};${o.contact};${o.email};${o.phone};${o.status};${(o.lines||[]).length};${amount.toFixed(2)}\n`;
+  });
+  downloadCSV(csv, 'cabrio_commandes.csv');
+}
+
+/* ═══════════════════════════════════════════
+   CLIENTS (CRM)
+   ═══════════════════════════════════════════ */
+let clientFilter = '';
+function filterClients(q) { clientFilter = q.toLowerCase(); renderClients(); }
+
+function renderClients() {
+  const clients = getClients().filter(c => {
+    if (!clientFilter) return true;
+    return (c.company + ' ' + c.contact + ' ' + c.email + ' ' + c.city).toLowerCase().includes(clientFilter);
+  });
+  const el = document.getElementById('clientsContent');
+  if (clients.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-state__icon">&#128101;</div><p>Aucun client. Ajoutez votre premier revendeur.</p></div>';
+    return;
+  }
+  const orders = getOrders();
+  el.innerHTML = `<div class="table-wrap"><table class="dtable"><thead><tr><th>Soci\u00E9t\u00E9</th><th>Contact</th><th>Email</th><th>T\u00E9l</th><th>Ville</th><th>Type</th><th>Commandes</th><th>Actions</th></tr></thead><tbody>
+  ${clients.map(c => {
+    const clientOrders = orders.filter(o => o.company === c.company || o.email === c.email);
+    return `<tr>
+      <td style="font-weight:600">${c.company}</td>
+      <td>${c.contact}</td>
+      <td style="font-size:0.78rem">${c.email}</td>
+      <td>${c.phone||'-'}</td>
+      <td>${c.city||'-'}</td>
+      <td style="font-size:0.75rem">${c.type||'-'}</td>
+      <td style="color:var(--amber);font-weight:600">${clientOrders.length}</td>
+      <td>
+        <button class="btn btn--sm btn--outline" onclick="editClient('${c.id}')">Modifier</button>
+        <button class="btn btn--sm btn--danger" onclick="if(confirm('Supprimer ce client ?')){deleteClient('${c.id}')}">&#128465;</button>
+      </td>
+    </tr>`;
+  }).join('')}</tbody></table></div>`;
+}
+
+function openNewClientModal(prefill) {
+  const p = prefill || {};
+  openModal(`
+    <div class="modal__header"><h2 class="modal__title">${p.id ? 'Modifier' : 'Nouveau'} client</h2><button class="modal__close" onclick="closeModal()">&times;</button></div>
+    <div class="modal__body">
+      <form onsubmit="saveClient(event,'${p.id||''}')">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="field"><label class="field__label">Soci\u00E9t\u00E9 *</label><input class="field__input" name="company" value="${p.company||''}" required></div>
+          <div class="field"><label class="field__label">Type</label><select class="field__input" name="type"><option value="bar" ${p.type==='bar'?'selected':''}>Bar / Pub</option><option value="restaurant" ${p.type==='restaurant'?'selected':''}>Restaurant</option><option value="caviste" ${p.type==='caviste'?'selected':''}>Caviste</option><option value="epicerie" ${p.type==='epicerie'?'selected':''}>\u00C9picerie fine</option><option value="hotel" ${p.type==='hotel'?'selected':''}>H\u00F4tel</option><option value="autre" ${p.type==='autre'?'selected':''}>Autre</option></select></div>
+          <div class="field"><label class="field__label">Contact *</label><input class="field__input" name="contact" value="${p.contact||''}" required></div>
+          <div class="field"><label class="field__label">Email *</label><input class="field__input" type="email" name="email" value="${p.email||''}" required></div>
+          <div class="field"><label class="field__label">T\u00E9l\u00E9phone</label><input class="field__input" name="phone" value="${p.phone||''}"></div>
+          <div class="field"><label class="field__label">Ville</label><input class="field__input" name="city" value="${p.city||''}"></div>
+        </div>
+        <div class="field"><label class="field__label">Adresse</label><input class="field__input" name="address" value="${p.address||''}"></div>
+        <div class="field"><label class="field__label">Notes internes</label><textarea class="field__input" name="notes" rows="2">${p.notes||''}</textarea></div>
+        <div class="modal__footer" style="padding:16px 0 0;border:none">
+          <button type="button" class="btn btn--outline" onclick="closeModal()">Annuler</button>
+          <button type="submit" class="btn btn--primary">${p.id ? 'Enregistrer' : 'Cr\u00E9er'}</button>
+        </div>
+      </form>
+    </div>
+  `);
+}
+
+function editClient(id) {
+  const client = getClients().find(c => c.id === id);
+  if (client) openNewClientModal(client);
+}
+
+function saveClient(e, existingId) {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const data = {
+    company: fd.get('company'),
+    contact: fd.get('contact'),
+    email: fd.get('email'),
+    phone: fd.get('phone'),
+    city: fd.get('city'),
+    type: fd.get('type'),
+    address: fd.get('address'),
+    notes: fd.get('notes')
+  };
+  const clients = getClients();
+  if (existingId) {
+    const idx = clients.findIndex(c => c.id === existingId);
+    if (idx >= 0) clients[idx] = { ...clients[idx], ...data };
+  } else {
+    data.id = 'CLI-' + Date.now();
+    data.createdAt = new Date().toISOString();
+    clients.push(data);
+  }
+  saveClients(clients);
+  closeModal();
+  renderClients();
+  renderDashboard();
+  showToast(existingId ? 'Client modifi\u00E9' : 'Client cr\u00E9\u00E9', 'success');
+}
+
+function deleteClient(id) {
+  saveClients(getClients().filter(c => c.id !== id));
+  renderClients();
+  showToast('Client supprim\u00E9', 'success');
+}
+
+/* ═══════════════════════════════════════════
+   DEPOSITS
+   ═══════════════════════════════════════════ */
+function renderDepositsSection() {
+  const deps = getDeposits();
+  const active = deps.filter(d => d.status === 'active');
+  const returned = deps.filter(d => d.status === 'returned');
+  const totalFuts = active.filter(d => d.type.includes('F\u00FBt')).reduce((s,d) => s+d.qty, 0);
+  const totalCaisses = active.filter(d => d.type.includes('Caisse')).reduce((s,d) => s+d.qty, 0);
+  const totalAmount = active.reduce((s,d) => s + d.qty*d.amount, 0);
+
+  document.getElementById('depositStats').innerHTML = `
+    <div class="stat-card"><div class="stat-card__label">F\u00FBts en circulation</div><div class="stat-card__value stat-card__value--blue">${totalFuts}</div></div>
+    <div class="stat-card"><div class="stat-card__label">Caisses en circulation</div><div class="stat-card__value stat-card__value--blue">${totalCaisses}</div></div>
+    <div class="stat-card"><div class="stat-card__label">Total consignes</div><div class="stat-card__value stat-card__value--amber">${totalAmount}\u20AC</div></div>
+    <div class="stat-card"><div class="stat-card__label">Retourn\u00E9es</div><div class="stat-card__value stat-card__value--green">${returned.length}</div></div>
+  `;
+
+  const el = document.getElementById('depositsContent');
+  if (deps.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-state__icon">&#9851;</div><p>Aucune consigne en cours.</p></div>';
+    return;
+  }
+  el.innerHTML = `<div class="table-wrap"><table class="dtable"><thead><tr><th>Commande</th><th>Client</th><th>Date</th><th>Type</th><th>Qt\u00E9</th><th>Montant</th><th>Statut</th><th>Actions</th></tr></thead><tbody>
+  ${deps.map((d,i) => `<tr>
+    <td>${d.orderId||'-'}</td>
+    <td>${d.company||'-'}</td>
+    <td>${new Date(d.date).toLocaleDateString('fr-FR')}</td>
+    <td>${d.type}</td>
+    <td>x${d.qty}</td>
+    <td style="color:var(--amber);font-weight:600">${d.qty*d.amount}\u20AC</td>
+    <td><span class="badge badge--${d.status}">${DEPOSIT_LABELS[d.status]||d.status}</span></td>
+    <td>${d.status === 'active' ? `<button class="btn btn--sm btn--outline" onclick="returnDeposit(${i})">Retour</button>` : ''}</td>
+  </tr>`).join('')}</tbody></table></div>`;
+}
+
+function returnDeposit(idx) {
+  const deps = getDeposits();
+  if (deps[idx]) {
+    deps[idx].status = 'returned';
+    deps[idx].returnDate = new Date().toISOString();
+    saveDeposits(deps);
+    renderDepositsSection();
+    renderDashboard();
+    showToast('Consigne retourn\u00E9e', 'success');
+  }
+}
+
+function openReturnDepositModal() {
+  const deps = getDeposits().filter(d => d.status === 'active');
+  if (deps.length === 0) { showToast('Aucune consigne active', 'error'); return; }
+  openModal(`
+    <div class="modal__header"><h2 class="modal__title">Enregistrer retour consigne</h2><button class="modal__close" onclick="closeModal()">&times;</button></div>
+    <div class="modal__body">
+      <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:16px">S\u00E9lectionnez les consignes retourn\u00E9es :</p>
+      ${deps.map((d,i) => {
+        const realIdx = getDeposits().indexOf(d);
+        return `<label style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(245,237,216,0.04);cursor:pointer">
+          <input type="checkbox" data-idx="${realIdx}" style="width:18px;height:18px;accent-color:var(--amber)">
+          <div style="flex:1"><div style="font-weight:600;font-size:0.85rem">${d.type} x${d.qty}</div><div style="font-size:0.75rem;color:var(--text-muted)">${d.company||'-'} \u2014 ${d.orderId}</div></div>
+          <span style="color:var(--amber);font-weight:600">${d.qty*d.amount}\u20AC</span>
+        </label>`;
+      }).join('')}
+      <div class="modal__footer" style="padding:16px 0 0;border:none">
+        <button class="btn btn--outline" onclick="closeModal()">Annuler</button>
+        <button class="btn btn--primary" onclick="processDepositReturns()">Valider retours</button>
+      </div>
+    </div>
+  `);
+}
+
+function processDepositReturns() {
+  const deps = getDeposits();
+  const checks = document.querySelectorAll('#modalContent input[type=checkbox]:checked');
+  checks.forEach(cb => {
+    const idx = parseInt(cb.dataset.idx);
+    if (deps[idx]) { deps[idx].status = 'returned'; deps[idx].returnDate = new Date().toISOString(); }
+  });
+  saveDeposits(deps);
+  closeModal();
+  renderDepositsSection();
+  renderDashboard();
+  showToast(checks.length + ' consigne(s) retourn\u00E9e(s)', 'success');
+}
+
+/* ═══════════════════════════════════════════
+   DELIVERIES
+   ═══════════════════════════════════════════ */
+function renderDeliveries() {
+  const deliveries = getDeliveries();
+  const el = document.getElementById('deliveriesContent');
+  if (deliveries.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-state__icon">&#128666;</div><p>Aucune livraison planifi\u00E9e. Cr\u00E9ez une livraison depuis une commande.</p></div>';
+    return;
+  }
+  el.innerHTML = `<div class="table-wrap"><table class="dtable"><thead><tr><th>Date</th><th>Client</th><th>Commande(s)</th><th>Adresse</th><th>Statut</th><th>Actions</th></tr></thead><tbody>
+  ${deliveries.map((d,i) => `<tr>
+    <td style="font-weight:600">${d.date ? new Date(d.date).toLocaleDateString('fr-FR') : '-'}</td>
+    <td>${d.company||'-'}</td>
+    <td>${d.orderIds ? d.orderIds.join(', ') : '-'}</td>
+    <td style="font-size:0.78rem">${d.address||'-'}</td>
+    <td><span class="badge badge--${d.status}">${STATUS_LABELS[d.status]||d.status}</span></td>
+    <td>
+      <select class="field__input" style="width:auto;font-size:0.75rem;padding:4px 8px" onchange="updateDeliveryStatus(${i},this.value)">
+        ${Object.keys(STATUS_LABELS).map(s => `<option value="${s}" ${d.status===s?'selected':''}>${STATUS_LABELS[s]}</option>`).join('')}
+      </select>
+    </td>
+  </tr>`).join('')}</tbody></table></div>`;
+}
+
+function updateDeliveryStatus(idx, status) {
+  const del = getDeliveries();
+  if (del[idx]) { del[idx].status = status; saveDeliveries(del); renderDeliveries(); showToast('Livraison mise \u00E0 jour', 'success'); }
+}
+
+function openNewDeliveryModal() {
+  const orders = getOrders().filter(o => o.status === 'confirmed' || o.status === 'pending');
+  openModal(`
+    <div class="modal__header"><h2 class="modal__title">Planifier livraison</h2><button class="modal__close" onclick="closeModal()">&times;</button></div>
+    <div class="modal__body">
+      <form onsubmit="createDelivery(event)">
+        <div class="field"><label class="field__label">Date de livraison</label><input class="field__input" type="date" name="date" required></div>
+        <div class="field"><label class="field__label">Client</label><input class="field__input" name="company" placeholder="Nom du client" required></div>
+        <div class="field"><label class="field__label">Adresse</label><input class="field__input" name="address" placeholder="Adresse de livraison"></div>
+        <div class="field"><label class="field__label">Commande(s) associ\u00E9e(s)</label>
+          ${orders.length > 0 ? orders.map(o => `<label style="display:flex;align-items:center;gap:8px;padding:6px 0"><input type="checkbox" name="orders" value="${o.id}" style="accent-color:var(--amber)"> ${o.id} \u2014 ${o.company}</label>`).join('') : '<p style="font-size:0.82rem;color:var(--text-muted)">Aucune commande en attente</p>'}
+        </div>
+        <div class="field"><label class="field__label">Notes</label><textarea class="field__input" name="notes" rows="2"></textarea></div>
+        <div class="modal__footer" style="padding:16px 0 0;border:none">
+          <button type="button" class="btn btn--outline" onclick="closeModal()">Annuler</button>
+          <button type="submit" class="btn btn--primary">Planifier</button>
+        </div>
+      </form>
+    </div>
+  `);
+}
+
+function createDelivery(e) {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const orderIds = fd.getAll('orders');
+  const delivery = {
+    id: 'LIV-' + Date.now(),
+    date: fd.get('date'),
+    company: fd.get('company'),
+    address: fd.get('address'),
+    orderIds,
+    notes: fd.get('notes'),
+    status: 'confirmed'
+  };
+  // Update linked orders status
+  if (orderIds.length > 0) {
+    const orders = getOrders();
+    orderIds.forEach(id => {
+      const o = orders.find(x => x.id === id);
+      if (o) o.status = 'shipping';
+    });
+    saveOrders(orders);
+  }
+  const del = getDeliveries();
+  del.unshift(delivery);
+  saveDeliveries(del);
+  closeModal();
+  renderDeliveries();
+  renderOrders();
+  renderDashboard();
+  showToast('Livraison planifi\u00E9e', 'success');
+}
+
+/* ═══════════════════════════════════════════
+   PRODUCTS
+   ═══════════════════════════════════════════ */
+function renderProductsSection() {
+  const el = document.getElementById('productsContent');
+  el.innerHTML = `<div class="table-wrap"><table class="dtable"><thead><tr><th>Produit</th><th>Style</th><th>ABV</th><th style="text-align:center">Formats</th></tr></thead><tbody>
+  ${PRODUCTS.map(p => `<tr>
+    <td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${p.color};margin-right:8px;vertical-align:middle"></span><strong>${p.name}</strong></td>
+    <td>${p.style}</td>
+    <td>${p.abv||'-'}</td>
+    <td style="text-align:center">${FORMATS.length}</td>
+  </tr>`).join('')}</tbody></table></div>
+  <div style="padding:16px;background:rgba(245,237,216,0.03);border-radius:12px;font-size:0.82rem;color:var(--text-muted)">
+    <strong>Formats disponibles :</strong> ${FORMATS.map(f => f.label + ' (' + f.price.toFixed(2) + '\u20AC)').join(' \u2022 ')}
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════
+   EXPORT
+   ═══════════════════════════════════════════ */
+function exportAllData() {
+  const data = {
+    orders: getOrders(),
+    clients: getClients(),
+    deposits: getDeposits(),
+    deliveries: getDeliveries(),
+    exportedAt: new Date().toISOString()
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'cabrio_export_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  showToast('Donn\u00E9es export\u00E9es', 'success');
+}
+
+function downloadCSV(content, filename) {
+  const blob = new Blob(['\uFEFF' + content], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+}
+
+/* ═══════════════════════════════════════════
+   MODAL
+   ═══════════════════════════════════════════ */
+function openModal(html) {
+  document.getElementById('modalContent').innerHTML = html;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeModal();
+});
+
+/* ═══════════════════════════════════════════
+   TOAST
+   ═══════════════════════════════════════════ */
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast toast--' + type + ' toast--show';
+  setTimeout(() => t.classList.remove('toast--show'), 3000);
+}
+</script>
+</body>
+</html>
