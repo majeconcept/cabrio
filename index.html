@@ -690,9 +690,10 @@ ul { list-style: none; }
   border-radius: 22px;
   overflow: visible;
   height: 420px;
-  isolation: isolate;
+  z-index: 1; /* stacking context explicite — hover passe z:100 par-dessus */
   transition: transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94),
-              box-shadow  0.5s cubic-bezier(0.25,0.46,0.45,0.94);
+              box-shadow  0.5s cubic-bezier(0.25,0.46,0.45,0.94),
+              z-index 0s;
   cursor: default;
 }
 /* Fond arrondi sans couper la bouteille */
@@ -798,8 +799,8 @@ ul { list-style: none; }
 
 .beer-card:hover .beer-card__bottle {
   /* Glisse à droite + zoom 20% + légère élévation
-     translateX(-15%) = décalage de 35% de la largeur bouteille vers la droite */
-  transform: translateX(-15%) scale(1.2) translateY(-14px);
+     translateX(5%) = bouteille centrée sur le tiers droit de la carte */
+  transform: translateX(5%) scale(1.2) translateY(-14px);
   filter: drop-shadow(8px 14px 28px rgba(0,0,0,0.62));
 }
 
