@@ -800,7 +800,7 @@ ul { list-style: none; }
 .beer-card:hover .beer-card__bottle {
   /* Glisse à droite + zoom 20% + légère élévation
      translateX(5%) = bouteille centrée sur le tiers droit de la carte */
-  transform: translateX(5%) scale(1.2) translateY(-14px);
+  transform: translateX(18%) scale(1.2) translateY(-14px);
   filter: drop-shadow(8px 14px 28px rgba(0,0,0,0.62));
 }
 
@@ -856,15 +856,16 @@ ul { list-style: none; }
 
 .beer-card__desc { display: none; }
 
-/* Reveal au survol — wipe-up via clip-path (reste dans la carte, pas de débordement) */
+/* Reveal au survol — colonne verticale gauche (35% de la carte) */
 .beer-card__reveal {
   position: absolute;
+  top: 0;
   bottom: 0;
   left: 0;
-  right: 0;
-  min-height: 46%;
-  padding: 22px 20px 20px;
-  background: color-mix(in srgb, var(--beer-color) 40%, #080604);
+  width: 35%;
+  right: auto;
+  padding: 20px 14px;
+  background: color-mix(in srgb, var(--beer-color) 45%, #080604);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   clip-path: inset(100% 0 0 0);
@@ -873,51 +874,57 @@ ul { list-style: none; }
   display: flex;
   flex-direction: column;
   justify-content: center;
-  border-radius: 0 0 22px 22px;
+  border-radius: 22px 0 0 22px;
 }
 
 .beer-card:hover .beer-card__reveal,
 .beer-card:focus-within .beer-card__reveal {
-  clip-path: inset(0 0 0 0 round 0 0 22px 22px);
-  padding-right: 44%; /* texte à gauche, bouteille à droite */
+  clip-path: inset(0 0 0 0);
+}
+
+/* Cacher le gradient-body au hover (la colonne prend le relais) */
+.beer-card:hover .beer-card__body,
+.beer-card:focus-within .beer-card__body {
+  display: none;
 }
 
 .beer-card__reveal-name {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1.15rem;
+  font-size: 1rem;
   color: #fff;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
+  line-height: 1.15;
 }
 
 .beer-card__reveal-row {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
-  margin-bottom: 10px;
+  gap: 6px;
+  margin-bottom: 8px;
 }
 
 .beer-card__reveal-icon { display: none; }
 
 .beer-card__reveal-label {
-  font-size: 0.68rem;
+  font-size: 0.6rem;
   font-weight: 700;
   color: rgba(255,255,255,0.45);
   text-transform: uppercase;
-  letter-spacing: 0.12em;
-  margin-bottom: 3px;
+  letter-spacing: 0.1em;
+  margin-bottom: 2px;
 }
 
 .beer-card__reveal-text {
-  font-size: 0.84rem;
-  color: rgba(255,255,255,0.82);
-  line-height: 1.4;
+  font-size: 0.76rem;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.35;
 }
 
-/* Mobile : reveal toujours visible */
+/* Mobile : colonne toujours visible */
 @media (hover: none) {
   .beer-card__reveal {
-    clip-path: inset(0 0 0 0 round 0 0 22px 22px);
+    clip-path: inset(0 0 0 0);
   }
   .beer-card__body { display: none; }
 }
