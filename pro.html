@@ -284,6 +284,11 @@ input, select, textarea { font: inherit; color: inherit; }
   color: var(--cream);
 }
 .nav__cta--back:hover { border-color: var(--amber); color: var(--amber); }
+.nav__cta--logout {
+  border: 1px solid rgba(192, 57, 43, 0.4);
+  color: #e74c3c;
+}
+.nav__cta--logout:hover { border-color: #e74c3c; background: rgba(192, 57, 43, 0.15); }
 .nav__burger {
   display: none;
   flex-direction: column;
@@ -1165,6 +1170,7 @@ input, select, textarea { font: inherit; color: inherit; }
     <li><a class="nav__link" href="#tarifs">Tarifs PRO</a></li>
     <li><a class="nav__link" href="#avantages">Avantages</a></li>
     <li><a class="nav__cta nav__cta--back" href="index.html">&larr; Site</a></li>
+    <li><a class="nav__cta nav__cta--logout" href="#" onclick="logout();return false;">D&eacute;connexion</a></li>
   </ul>
   <button class="nav__burger" id="burger" aria-label="Menu" aria-expanded="false" onclick="toggleMobile()">
     <span></span><span></span><span></span>
@@ -1178,6 +1184,7 @@ input, select, textarea { font: inherit; color: inherit; }
   <a href="#tarifs" onclick="toggleMobile()">Tarifs PRO</a>
   <a href="#avantages" onclick="toggleMobile()">Avantages</a>
   <a href="index.html">&larr; Retour au site</a>
+  <a href="#" onclick="logout();return false;">D&eacute;connexion</a>
 </div>
 
 <!-- ═══════════════════════════════════════════
@@ -1461,6 +1468,11 @@ function initApp() {
   renderDeposits();
   initReveal();
   initTabNav();
+}
+
+function logout() {
+  sessionStorage.removeItem('cabrio_pro_auth');
+  location.reload();
 }
 
 // Check session on load
