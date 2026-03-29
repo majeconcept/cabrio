@@ -22,17 +22,34 @@
 
 13 produits : 12 bières + Slimo (limonade artisanale)
 
+### Tarifs PRO HT 2026 (prix unitaires, droits acquittés)
+
+Les prix varient par produit. Fourchette : 33cl de 1.55€ à 1.99€, 75cl de 3.75€ à 4.14€.
+Les prix par lot sont calculés automatiquement (prix unitaire x quantité du lot).
+
 ### Formats de conditionnement
 
-| ID | Format | Prix |
+| ID | Format | Calcul |
 |-----|-----|------|
-| 33u | 33cl Unité | 2.20€ |
-| 33c | 33cl Carton de 12 | 24.00€ |
-| 75u | 75cl Unité | 4.80€ |
-| 75c | 75cl Carton de 6 | 26.40€ |
-| 75c12 | 75cl Caisse de 12 (consignée 5€) | 57.60€ |
-| f20 | Fût 20L (consigné 30€) | 85.00€ |
-| f30 | Fût 30L (consigné 30€) | 120.00€ |
+| 33u | 33cl Unité | prix unitaire 33cl |
+| 33c | 33cl Carton de 12 | 12 x prix unitaire 33cl |
+| 75u | 75cl Unité | prix unitaire 75cl |
+| 75c | 75cl Carton de 6 | 6 x prix unitaire 75cl |
+| 75c12 | 75cl Caisse CFP 12 (consignée 5€) | 12 x prix unitaire 75cl |
+| f20 | Fût 20L (consigné 30€) | 85.00€ fixe |
+| f30 | Fût 30L (consigné 30€) | 120.00€ fixe |
+
+### Packs spéciaux
+- Tripack 3x33cl : 6.76€ HT
+- Sixpack 6x33cl : 12.28€ HT
+- Sixpack Noël 6x33cl : 14.10€ HT
+
+### Conditions commerciales
+- TVA 20% (5.5% limonade)
+- Paiement 30 jours net
+- Franco de port dès 850€ HT/commande
+- Validité tarifs : 31/12/2026
+- Facturation en droits acquittés
 
 ## Codes d'accès
 

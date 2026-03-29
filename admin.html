@@ -547,29 +547,45 @@ select.field__input { cursor: pointer; }
    DATA (mirrors pro.html)
    ═══════════════════════════════════════════ */
 const PRODUCTS = [
-  { id: 'echappee', name: "L'\u00C9chapp\u00E9e Belle", style: 'Blonde', abv: '5.4%', color: '#5B8C3E' },
-  { id: 'honeymoon', name: 'Honeymoon', style: 'Blonde au miel', abv: '6.4%', color: '#E8C94A' },
-  { id: 'blossom', name: 'Blossom Therapy', style: 'Blonde', abv: '5.4%', color: '#D65F8A' },
-  { id: 'namaste', name: 'Namast\u00E9 Timut', style: 'Blonde', abv: '5.4%', color: '#8B5BA6' },
-  { id: 'hopla', name: "Hop'la Weiss", style: 'Blanche', abv: '6.4%', color: '#E8A832' },
-  { id: 'printaniere', name: 'La Printani\u00E8re', style: 'Blonde Saisonni\u00E8re', abv: '5.4%', color: '#7B9EC4' },
-  { id: 'moana', name: 'Moana Beach', style: 'Session IPA', abv: '4.5%', color: '#4AAFC7' },
-  { id: 'omg', name: 'Oh My Goat', style: 'IPA', abv: '6.5%', color: '#D43A6E' },
-  { id: 'amalthee', name: "L'Amalth\u00E9e", style: 'Ambr\u00E9e', abv: '6.9%', color: '#C75B2A' },
-  { id: 'hermine', name: "L'Hermine", style: 'Ambr\u00E9e Saisonni\u00E8re', abv: '5.8%', color: '#C0392B' },
-  { id: 'boreale', name: "Bor\u00E9'Ale Kveik", style: 'Sp\u00E9ciale', abv: '6.1%', color: '#2D7A4F' },
-  { id: 'verymad', name: 'Very Mad Triple', style: 'Sp\u00E9ciale', abv: '8.5%', color: '#D47B2A' },
-  { id: 'slimo', name: 'Slimo', style: 'Limonade', abv: '', color: '#C9A84C' }
+  { id: 'echappee', name: "L'\u00C9chapp\u00E9e Belle", style: 'Blonde', abv: '5.4%', color: '#5B8C3E', prices: { '33u': 1.76, '75u': 3.75 } },
+  { id: 'honeymoon', name: 'Honeymoon', style: 'Blonde au miel', abv: '6.4%', color: '#E8C94A', prices: { '33u': 1.99, '75u': 4.14 } },
+  { id: 'blossom', name: 'Blossom Therapy', style: 'Blonde', abv: '5.4%', color: '#D65F8A', prices: { '33u': 1.87, '75u': 3.91 } },
+  { id: 'namaste', name: 'Namast\u00E9 Timut', style: 'Blonde', abv: '5.4%', color: '#8B5BA6', prices: { '33u': 1.94, '75u': 3.98 } },
+  { id: 'hopla', name: "Hop'la Weiss", style: 'Blanche', abv: '6.4%', color: '#E8A832', prices: { '33u': 1.87, '75u': 3.86 } },
+  { id: 'printaniere', name: 'La Printani\u00E8re', style: 'Blonde Saisonni\u00E8re', abv: '5.4%', color: '#7B9EC4', prices: { '33u': 1.87, '75u': 3.91 } },
+  { id: 'moana', name: 'Moana Beach', style: 'Session IPA', abv: '4.5%', color: '#4AAFC7', prices: { '33u': 1.94, '75u': 3.98 } },
+  { id: 'omg', name: 'Oh My Goat', style: 'IPA', abv: '6.5%', color: '#D43A6E', prices: { '33u': 1.94, '75u': 3.98 } },
+  { id: 'amalthee', name: "L'Amalth\u00E9e", style: 'Ambr\u00E9e', abv: '6.9%', color: '#C75B2A', prices: { '33u': 1.81, '75u': 3.86 } },
+  { id: 'hermine', name: "L'Hermine", style: 'Ambr\u00E9e Saisonni\u00E8re', abv: '5.8%', color: '#C0392B', prices: { '33u': 1.87, '75u': 3.91 } },
+  { id: 'boreale', name: "Bor\u00E9'Ale Kveik", style: 'Sp\u00E9ciale', abv: '6.1%', color: '#2D7A4F', prices: { '33u': 1.87, '75u': 3.91 } },
+  { id: 'verymad', name: 'Very Mad Triple', style: 'Sp\u00E9ciale', abv: '8.5%', color: '#D47B2A', prices: { '33u': 1.94, '75u': 3.98 } },
+  { id: 'slimo', name: 'Slimo', style: 'Limonade', abv: '', color: '#C9A84C', prices: { '33u': 1.55 } }
 ];
 const FORMATS = [
-  { id: '33u', label: '33cl Unit\u00E9', price: 2.20 },
-  { id: '33c', label: '33cl Carton 12', price: 24.00 },
-  { id: '75u', label: '75cl Unit\u00E9', price: 4.80 },
-  { id: '75c', label: '75cl Carton 6', price: 26.40 },
-  { id: '75c12', label: '75cl Caisse 12', price: 57.60 },
-  { id: 'f20', label: 'F\u00FBt 20L', price: 85.00 },
-  { id: 'f30', label: 'F\u00FBt 30L', price: 120.00 }
+  { id: '33u', label: '33cl Unit\u00E9', mult: 1, base: '33u' },
+  { id: '33c', label: '33cl Carton 12', mult: 12, base: '33u' },
+  { id: '75u', label: '75cl Unit\u00E9', mult: 1, base: '75u' },
+  { id: '75c', label: '75cl Carton 6', mult: 6, base: '75u' },
+  { id: '75c12', label: '75cl Caisse 12', mult: 12, base: '75u' },
+  { id: 'f20', label: 'F\u00FBt 20L', mult: 1, base: 'f20', fixedPrice: 85.00 },
+  { id: 'f30', label: 'F\u00FBt 30L', mult: 1, base: 'f30', fixedPrice: 120.00 }
 ];
+function getFormatPrice(product, format) {
+  if (format.fixedPrice) return format.fixedPrice;
+  const unitPrice = product.prices[format.base];
+  if (!unitPrice) return null;
+  return +(unitPrice * format.mult).toFixed(2);
+}
+function getLineCost(line) {
+  const p = PRODUCTS.find(x => x.id === line.productId);
+  const f = FORMATS.find(x => x.id === line.formatId);
+  if (!p || !f) return 0;
+  const price = getFormatPrice(p, f);
+  return (price || 0) * line.qty;
+}
+function getOrderTotal(order) {
+  return (order.lines || []).reduce((s, l) => s + getLineCost(l), 0);
+}
 const STATUS_LABELS = { pending: 'En attente', confirmed: 'Confirm\u00E9e', shipping: 'En livraison', delivered: 'Livr\u00E9e' };
 const DEPOSIT_LABELS = { active: 'En cours', returned: 'Retourn\u00E9e' };
 
@@ -652,12 +668,7 @@ function renderDashboard() {
   const clients = getClients();
   const deposits = getDeposits();
   const pending = orders.filter(o => o.status === 'pending').length;
-  const totalRevenue = orders.reduce((s, o) => {
-    return s + (o.lines || []).reduce((ls, l) => {
-      const f = FORMATS.find(f => f.id === l.formatId);
-      return ls + (f ? f.price * l.qty : 0);
-    }, 0);
-  }, 0);
+  const totalRevenue = orders.reduce((s, o) => s + getOrderTotal(o), 0);
   const activeDeposits = deposits.filter(d => d.status === 'active');
   const depositTotal = activeDeposits.reduce((s, d) => s + (d.amount * d.qty), 0);
 
@@ -705,7 +716,7 @@ function renderOrders() {
     return;
   }
   el.innerHTML = `<div class="table-wrap"><table class="dtable"><thead><tr><th>R\u00E9f</th><th>Client</th><th>Contact</th><th>Date</th><th>Lignes</th><th>Montant</th><th>Statut</th><th>Actions</th></tr></thead><tbody>${orders.map(o => {
-    const amount = (o.lines||[]).reduce((s,l) => { const f = FORMATS.find(f => f.id === l.formatId); return s + (f ? f.price * l.qty : 0); }, 0);
+    const amount = getOrderTotal(o);
     return `<tr>
       <td style="font-weight:600">${o.id}</td>
       <td>${o.company || '-'}</td>
@@ -723,7 +734,7 @@ function viewOrder(id) {
   const orders = getOrders();
   const o = orders.find(x => x.id === id);
   if (!o) return;
-  const amount = (o.lines||[]).reduce((s,l) => { const f = FORMATS.find(f => f.id === l.formatId); return s + (f ? f.price * l.qty : 0); }, 0);
+  const amount = getOrderTotal(o);
   openModal(`
     <div class="modal__header"><h2 class="modal__title">Commande ${o.id}</h2><button class="modal__close" onclick="closeModal()">&times;</button></div>
     <div class="modal__body">
@@ -740,7 +751,7 @@ function viewOrder(id) {
       ${(o.lines||[]).map(l => {
         const p = PRODUCTS.find(x => x.id === l.productId);
         const f = FORMATS.find(x => x.id === l.formatId);
-        const lAmount = f ? f.price * l.qty : 0;
+        const lAmount = getLineCost(l);
         return `<tr><td>${p?p.name:l.productId}</td><td>${f?f.label:l.formatId}</td><td>x${l.qty}</td><td style="color:var(--amber);font-weight:600">${lAmount.toFixed(2)}\u20AC</td></tr>`;
       }).join('')}
       </tbody></table>
@@ -899,7 +910,7 @@ function exportOrders() {
   const orders = getOrders();
   let csv = 'R\u00E9f;Date;Client;Contact;Email;T\u00E9l;Statut;Lignes;Montant HT\n';
   orders.forEach(o => {
-    const amount = (o.lines||[]).reduce((s,l)=>{const f=FORMATS.find(x=>x.id===l.formatId);return s+(f?f.price*l.qty:0);},0);
+    const amount = getOrderTotal(o);
     csv += `${o.id};${new Date(o.date).toLocaleDateString('fr-FR')};${o.company};${o.contact};${o.email};${o.phone};${o.status};${(o.lines||[]).length};${amount.toFixed(2)}\n`;
   });
   downloadCSV(csv, 'cabrio_commandes.csv');
@@ -1188,7 +1199,7 @@ function renderProductsSection() {
     <td style="text-align:center">${FORMATS.length}</td>
   </tr>`).join('')}</tbody></table></div>
   <div style="padding:16px;background:rgba(245,237,216,0.03);border-radius:12px;font-size:0.82rem;color:var(--text-muted)">
-    <strong>Formats disponibles :</strong> ${FORMATS.map(f => f.label + ' (' + f.price.toFixed(2) + '\u20AC)').join(' \u2022 ')}
+    <strong>Formats disponibles :</strong> ${FORMATS.map(f => f.label + (f.fixedPrice ? ' (' + f.fixedPrice.toFixed(2) + '\u20AC)' : '')).join(' \u2022 ')}
   </div>`;
 }
 

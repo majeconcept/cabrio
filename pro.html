@@ -497,6 +497,28 @@ input, select, textarea { font: inherit; color: inherit; }
   background: rgba(245, 237, 216, 0.08);
   margin-top: 4px;
 }
+.product-card__medal {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 100px;
+  background: rgba(212, 136, 28, 0.15);
+  color: var(--amber);
+  margin-top: 4px;
+  margin-left: 4px;
+}
+.product-card__season {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 100px;
+  background: rgba(192, 57, 43, 0.12);
+  color: #e74c3c;
+  margin-top: 4px;
+  margin-left: 4px;
+}
 .product-card__formats {
   padding: 0 18px 16px;
 }
@@ -805,7 +827,9 @@ input, select, textarea { font: inherit; color: inherit; }
   border-radius: 10px;
 }
 .tarif-card__label { font-size: 0.85rem; color: rgba(245, 237, 216, 0.7); }
-.tarif-card__price { font-size: 0.9rem; font-weight: 700; color: var(--amber); }
+.tarif-card__price { font-size: 0.9rem; font-weight: 700; color: var(--amber); text-align: right; }
+.tarif-card--wide { grid-column: 1 / -1; }
+.tarif-card__row--header { background: rgba(212, 136, 28, 0.08); }
 .tarifs__note {
   text-align: center;
   padding: 20px;
@@ -1234,6 +1258,10 @@ input, select, textarea { font: inherit; color: inherit; }
               <p>Ajoutez des produits pour commencer votre commande.</p>
             </div>
             <div id="orderLines"></div>
+            <div class="order-panel__total" style="display:flex;justify-content:space-between;padding:12px 0;border-top:1px solid rgba(245,237,216,0.15);font-weight:700;font-size:1rem;color:var(--amber);">
+              <span>Total HT</span>
+              <span id="orderTotal">0.00&euro; HT</span>
+            </div>
           </div>
           <div class="order-panel__footer">
             <form class="order-panel__form" id="orderForm" onsubmit="submitOrder(event)">
@@ -1379,30 +1407,51 @@ input, select, textarea { font: inherit; color: inherit; }
    DATA
    ═══════════════════════════════════════════ */
 const PRODUCTS = [
-  { id: 'echappee', name: "L'\u00C9chapp\u00E9e Belle", style: 'Blonde \u2022 Houblon Triskel', abv: '5.4%', cat: 'blonde', color: '#5B8C3E', img: "images/L'\u00C9chapp\u00E9e Belle bouteille.webp" },
-  { id: 'honeymoon', name: 'Honeymoon', style: 'Blonde au miel', abv: '6.4%', cat: 'blonde', color: '#E8C94A', img: 'images/Honeymoon bouteille.webp' },
-  { id: 'blossom', name: 'Blossom Therapy', style: 'Blonde \u2022 Fleur de sureau', abv: '5.4%', cat: 'blonde', color: '#D65F8A', img: 'images/Blossom Therapy bouteille.webp' },
-  { id: 'namaste', name: 'Namast\u00E9 Timut', style: 'Blonde \u2022 Baie de Timut', abv: '5.4%', cat: 'blonde', color: '#8B5BA6', img: 'images/Namaste Timut bouteille.webp' },
-  { id: 'hopla', name: "Hop'la Weiss", style: 'Blanche \u2022 Weizen', abv: '6.4%', cat: 'speciale', color: '#E8A832', img: 'images/Hop\'la Weiss Blanche bouteille.webp' },
-  { id: 'printaniere', name: 'La Printani\u00E8re', style: 'Blonde \u2022 Cardamome', abv: '5.4%', cat: 'saison', color: '#7B9EC4', img: 'images/La printani\u00E8re bouteille.webp' },
-  { id: 'moana', name: 'Moana Beach', style: 'Session IPA', abv: '4.5%', cat: 'ipa', color: '#4AAFC7', img: 'images/Moana Beach Session IPA bouteille.webp' },
-  { id: 'omg', name: 'Oh My Goat', style: 'IPA \u2022 Houblon Mosaic', abv: '6.5%', cat: 'ipa', color: '#D43A6E', img: 'images/Oh My Goat Pale Ale bouteille.webp' },
-  { id: 'amalthee', name: "L'Amalth\u00E9e", style: 'Ambr\u00E9e \u2022 Malts torr\u00E9fi\u00E9s', abv: '6.9%', cat: 'ambree', color: '#C75B2A', img: 'images/L\'Amalth\u00E9e Ambr\u00E9e bouteille.webp' },
-  { id: 'hermine', name: "L'Hermine", style: 'Ambr\u00E9e d\'hiver \u2022 \u00C9pices', abv: '5.8%', cat: 'saison', color: '#C0392B', img: 'images/L\'Hermine \u00C9pices Noel_bouteille.webp' },
-  { id: 'boreale', name: "Bor\u00E9'Ale Kveik", style: 'Kveik \u2022 Levure norv\u00E9gienne', abv: '6.1%', cat: 'speciale', color: '#2D7A4F', img: 'images/Boreale Kveik _bouteille.webp' },
-  { id: 'verymad', name: 'Very Mad Triple', style: 'Triple grain \u2022 Cuivr\u00E9e', abv: '8.5%', cat: 'speciale', color: '#D47B2A', img: 'images/Very Mad Triple bouteille.webp' },
-  { id: 'slimo', name: 'Slimo', style: 'Limonade artisanale', abv: '', cat: 'limonade', color: '#C9A84C', img: 'images/Slimo_bouteille.webp' }
+  { id: 'echappee', name: "L'\u00C9chapp\u00E9e Belle", style: 'Blonde \u2022 Houblon Triskel', abv: '5.4%', cat: 'blonde', color: '#5B8C3E', img: "images/L'\u00C9chapp\u00E9e Belle bouteille.webp", medal: 'OR Lyon 2023', season: false, prices: { '33u': 1.76, '75u': 3.75 }, ean: { '33': '3760237190017', '75': '3760237190000' } },
+  { id: 'honeymoon', name: 'Honeymoon', style: 'Blonde au miel', abv: '6.4%', cat: 'blonde', color: '#E8C94A', img: 'images/Honeymoon bouteille.webp', medal: 'OR Lyon 2023', season: false, prices: { '33u': 1.99, '75u': 4.14 }, ean: { '33': '3760237190154', '75': '3760237190147' } },
+  { id: 'blossom', name: 'Blossom Therapy', style: 'Blonde \u2022 Fleur de sureau', abv: '5.4%', cat: 'blonde', color: '#D65F8A', img: 'images/Blossom Therapy bouteille.webp', medal: '', season: true, prices: { '33u': 1.87, '75u': 3.91 }, ean: { '33': '3760237190130', '75': '3760237190086' } },
+  { id: 'namaste', name: 'Namast\u00E9 Timut', style: 'Blonde \u2022 Baie de Timut', abv: '5.4%', cat: 'blonde', color: '#8B5BA6', img: 'images/Namaste Timut bouteille.webp', medal: '', season: false, prices: { '33u': 1.94, '75u': 3.98 }, ean: { '33': '3760237190253', '75': '3760237190260' } },
+  { id: 'hopla', name: "Hop'la Weiss", style: 'Blanche \u2022 Weizen', abv: '6.4%', cat: 'speciale', color: '#E8A832', img: 'images/Hop\'la Weiss Blanche bouteille.webp', medal: 'ARGENT Lyon 2024', season: false, prices: { '33u': 1.87, '75u': 3.86 }, ean: { '33': '3760237190055', '75': '3760237190048' } },
+  { id: 'printaniere', name: 'La Printani\u00E8re', style: 'Blonde \u2022 Cardamome', abv: '5.4%', cat: 'saison', color: '#7B9EC4', img: 'images/La printani\u00E8re bouteille.webp', medal: '', season: true, prices: { '33u': 1.87, '75u': 3.91 }, ean: { '33': '3760237190123', '75': '3760237190116' } },
+  { id: 'moana', name: 'Moana Beach', style: 'Session IPA', abv: '4.5%', cat: 'ipa', color: '#4AAFC7', img: 'images/Moana Beach Session IPA bouteille.webp', medal: 'ARGENT Lyon 2024', season: false, prices: { '33u': 1.94, '75u': 3.98 }, ean: { '33': '3760237190215', '75': '3760237190208' } },
+  { id: 'omg', name: 'Oh My Goat', style: 'IPA \u2022 Houblon Mosaic', abv: '6.5%', cat: 'ipa', color: '#D43A6E', img: 'images/Oh My Goat Pale Ale bouteille.webp', medal: 'OR Lyon 2023', season: false, prices: { '33u': 1.94, '75u': 3.98 }, ean: { '33': '3760237190178', '75': '3760237190161' } },
+  { id: 'amalthee', name: "L'Amalth\u00E9e", style: 'Ambr\u00E9e \u2022 Malts torr\u00E9fi\u00E9s', abv: '6.9%', cat: 'ambree', color: '#C75B2A', img: 'images/L\'Amalth\u00E9e Ambr\u00E9e bouteille.webp', medal: 'ARGENT Lyon 2023', season: false, prices: { '33u': 1.81, '75u': 3.86 }, ean: { '33': '3760237190031', '75': '3760237190024' } },
+  { id: 'hermine', name: "L'Hermine", style: 'Ambr\u00E9e d\'hiver \u2022 \u00C9pices', abv: '5.8%', cat: 'saison', color: '#C0392B', img: 'images/L\'Hermine \u00C9pices Noel_bouteille.webp', medal: '', season: true, prices: { '33u': 1.87, '75u': 3.91 }, ean: { '33': '3760237190109', '75': '3760237190185' } },
+  { id: 'boreale', name: "Bor\u00E9'Ale Kveik", style: 'Kveik \u2022 Levure norv\u00E9gienne', abv: '6.1%', cat: 'speciale', color: '#2D7A4F', img: 'images/Boreale Kveik _bouteille.webp', medal: 'OR Lyon 2024', season: false, prices: { '33u': 1.87, '75u': 3.91 }, ean: { '33': '3760237190277', '75': '3760237190284' } },
+  { id: 'verymad', name: 'Very Mad Triple', style: 'Triple grain \u2022 Cuivr\u00E9e', abv: '8.5%', cat: 'speciale', color: '#D47B2A', img: 'images/Very Mad Triple bouteille.webp', medal: '', season: false, prices: { '33u': 1.94, '75u': 3.98 }, ean: { '33': '3760237190246', '75': '3760237190239' } },
+  { id: 'slimo', name: 'Slimo', style: 'Limonade artisanale', abv: '', cat: 'limonade', color: '#C9A84C', img: 'images/Slimo_bouteille.webp', medal: '', season: false, prices: { '33u': 1.55 }, ean: { '33': '3760237190291' } }
 ];
 
+/* Prix HT unitaires ci-dessus. Les prix par lot sont calcul\u00E9s automatiquement */
 const FORMATS = [
-  { id: '33u', label: '33cl \u2014 Unit\u00E9', short: '33cl x1', price: '2.20\u20AC' },
-  { id: '33c', label: '33cl \u2014 Carton de 12', short: '33cl x12', price: '24.00\u20AC' },
-  { id: '75u', label: '75cl \u2014 Unit\u00E9', short: '75cl x1', price: '4.80\u20AC' },
-  { id: '75c', label: '75cl \u2014 Carton de 6', short: '75cl x6', price: '26.40\u20AC' },
-  { id: '75c12', label: '75cl \u2014 Caisse de 12', short: '75cl x12', price: '57.60\u20AC' },
-  { id: 'f20', label: 'F\u00FBt 20L', short: 'F\u00FBt 20L', price: '85.00\u20AC' },
-  { id: 'f30', label: 'F\u00FBt 30L', short: 'F\u00FBt 30L', price: '120.00\u20AC' }
+  { id: '33u', label: '33cl \u2014 Unit\u00E9', short: '33cl x1', mult: 1, base: '33u' },
+  { id: '33c', label: '33cl \u2014 Carton de 12', short: '33cl x12', mult: 12, base: '33u' },
+  { id: '75u', label: '75cl \u2014 Unit\u00E9', short: '75cl x1', mult: 1, base: '75u' },
+  { id: '75c', label: '75cl \u2014 Carton de 6', short: '75cl x6', mult: 6, base: '75u' },
+  { id: '75c12', label: '75cl \u2014 Caisse de 12 (consign\u00E9e)', short: '75cl x12', mult: 12, base: '75u' },
+  { id: 'f20', label: 'F\u00FBt 20L', short: 'F\u00FBt 20L', mult: 1, base: 'f20', fixedPrice: 85.00 },
+  { id: 'f30', label: 'F\u00FBt 30L', short: 'F\u00FBt 30L', mult: 1, base: 'f30', fixedPrice: 120.00 }
 ];
+
+/* Packs sp\u00E9ciaux */
+const PACKS = [
+  { id: 'tripack', label: 'Tripack 3x33cl', price: 6.76, ean: '3760237190321', conditionn: 'carton de 3' },
+  { id: 'sixpack', label: 'Sixpack 6x33cl', price: 12.28, ean: '3760237190314', conditionn: 'carton de 4' },
+  { id: 'sixpack_noel', label: 'Sixpack No\u00EBl 6x33cl', price: 14.10, ean: '3760237190307', conditionn: 'carton de 4' }
+];
+
+/* Calcule le prix HT d'un format pour un produit */
+function getFormatPrice(product, format) {
+  if (format.fixedPrice) return format.fixedPrice;
+  const unitPrice = product.prices[format.base];
+  if (!unitPrice) return null;
+  return +(unitPrice * format.mult).toFixed(2);
+}
+
+function formatPrice(val) {
+  if (val === null || val === undefined) return '\u2014';
+  return val.toFixed(2) + '\u20AC';
+}
 
 const CATEGORIES = [
   { id: 'all', label: 'Tous' },
@@ -1506,7 +1555,9 @@ function renderFilters() {
    ═══════════════════════════════════════════ */
 function renderProducts() {
   const grid = document.getElementById('catalogGrid');
-  grid.innerHTML = PRODUCTS.map(p => `
+  grid.innerHTML = PRODUCTS.map(p => {
+    const availableFormats = FORMATS.filter(f => getFormatPrice(p, f) !== null);
+    return `
     <article class="product-card" data-cat="${p.cat}" data-id="${p.id}">
       <div class="product-card__header">
         <img class="product-card__img" src="${p.img}" alt="${p.name}" loading="lazy">
@@ -1514,23 +1565,28 @@ function renderProducts() {
           <h3 class="product-card__name">${p.name}</h3>
           <p class="product-card__meta">${p.style}</p>
           ${p.abv ? `<span class="product-card__abv">${p.abv}</span>` : ''}
+          ${p.medal ? `<span class="product-card__medal">\uD83C\uDFC5 ${p.medal}</span>` : ''}
+          ${p.season ? `<span class="product-card__season">Saisonni\u00E8re</span>` : ''}
         </div>
       </div>
       <div class="product-card__formats">
-        ${FORMATS.map(f => `
+        ${availableFormats.map(f => {
+          const price = getFormatPrice(p, f);
+          const deposit = DEPOSIT_RATES[f.id];
+          return `
           <div class="format-row">
             <span class="format-row__label">${f.label}</span>
-            <span class="format-row__price">${f.price}</span>
+            <span class="format-row__price">${formatPrice(price)} HT${deposit ? ' + ' + deposit.amount + '\u20AC consigne' : ''}</span>
             <div class="format-row__qty">
               <button class="qty-btn" onclick="changeQty('${p.id}','${f.id}',-1)">&minus;</button>
               <input class="qty-input" type="number" min="0" value="${orderState[p.id+':'+f.id]||0}" onchange="setQty('${p.id}','${f.id}',this.value)" data-key="${p.id}:${f.id}">
               <button class="qty-btn" onclick="changeQty('${p.id}','${f.id}',1)">+</button>
             </div>
-          </div>
-        `).join('')}
+          </div>`;
+        }).join('')}
       </div>
-    </article>
-  `).join('');
+    </article>`;
+  }).join('');
 }
 
 /* ═══════════════════════════════════════════
@@ -1583,21 +1639,28 @@ function renderOrderSummary() {
   }
   empty.style.display = 'none';
 
+  let totalHT = 0;
   lines.innerHTML = keys.map(key => {
     const [pid, fid] = key.split(':');
     const product = PRODUCTS.find(p => p.id === pid);
     const format = FORMATS.find(f => f.id === fid);
+    const unitPrice = product && format ? getFormatPrice(product, format) : 0;
+    const lineTotal = unitPrice * orderState[key];
+    totalHT += lineTotal;
     return `
       <div class="order-line">
         <div class="order-line__info">
           <div class="order-line__product">${product ? product.name : pid}</div>
-          <div class="order-line__format">${format ? format.short : fid}</div>
+          <div class="order-line__format">${format ? format.short : fid} \u2014 ${formatPrice(unitPrice)}</div>
         </div>
         <span class="order-line__qty">x${orderState[key]}</span>
         <button class="order-line__remove" onclick="removeOrderLine('${key}')">&times;</button>
       </div>
     `;
   }).join('');
+  // Afficher le total
+  const totalEl = document.getElementById('orderTotal');
+  if (totalEl) totalEl.textContent = totalHT.toFixed(2) + '\u20AC HT';
 }
 
 /* ═══════════════════════════════════════════
@@ -1617,11 +1680,15 @@ function submitOrder(e) {
   if (keys.length === 0) return;
 
   // Build order details
+  let orderTotalHT = 0;
   const orderLines = keys.map(key => {
     const [pid, fid] = key.split(':');
     const product = PRODUCTS.find(p => p.id === pid);
     const format = FORMATS.find(f => f.id === fid);
-    return `\u2022 ${product ? product.name : pid} \u2014 ${format ? format.label : fid} \u2014 Qty: ${orderState[key]}`;
+    const price = product && format ? getFormatPrice(product, format) : 0;
+    const lineTotal = price * orderState[key];
+    orderTotalHT += lineTotal;
+    return `\u2022 ${product ? product.name : pid} \u2014 ${format ? format.label : fid} \u2014 ${formatPrice(price)} x ${orderState[key]} = ${formatPrice(lineTotal)}`;
   });
 
   const deposits = [];
@@ -1650,7 +1717,9 @@ function submitOrder(e) {
     'D\u00C9TAIL DE LA COMMANDE :',
     ...orderLines,
     '',
-    'Total : ' + keys.length + ' ligne(s), ' + keys.reduce((s,k) => s + orderState[k], 0) + ' article(s)',
+    '',
+    'TOTAL HT : ' + orderTotalHT.toFixed(2) + '\u20AC',
+    keys.length + ' ligne(s), ' + keys.reduce((s,k) => s + orderState[k], 0) + ' article(s)',
   ];
 
   if (deposits.length > 0) {
@@ -1747,41 +1816,60 @@ function showOrderSuccess() {
    ═══════════════════════════════════════════ */
 function renderTarifs() {
   const grid = document.getElementById('tarifsGrid');
-  const tarifData = [
-    { icon: '\uD83C\uDF7A', format: 'Bouteilles 33cl', rows: [
-      { label: 'Unit\u00E9', price: '2.20\u20AC HT' },
-      { label: 'Carton de 12', price: '24.00\u20AC HT' },
-      { label: 'Palette (50 cartons)', price: 'Sur devis' }
-    ]},
-    { icon: '\uD83C\uDF77', format: 'Bouteilles 75cl', rows: [
-      { label: 'Unit\u00E9', price: '4.80\u20AC HT' },
-      { label: 'Carton de 6', price: '26.40\u20AC HT' },
-      { label: 'Caisse consign\u00E9e 12x75cl', price: '57.60\u20AC HT + 5\u20AC consigne' }
-    ]},
-    { icon: '\uD83C\uDF7A', format: 'F\u00FBts inox (consign\u00E9s)', rows: [
-      { label: 'F\u00FBt 20L', price: '85.00\u20AC HT + 30\u20AC consigne' },
-      { label: 'F\u00FBt 30L', price: '120.00\u20AC HT + 30\u20AC consigne' },
-      { label: 'Location tireuse', price: 'Sur devis' }
-    ]},
-    { icon: '\uD83C\uDF4B', format: 'Slimo Limonade', rows: [
-      { label: '33cl Unit\u00E9', price: '1.80\u20AC HT' },
-      { label: '33cl Carton de 12', price: '19.80\u20AC HT' },
-      { label: '75cl Unit\u00E9', price: '3.90\u20AC HT' }
-    ]}
-  ];
-  grid.innerHTML = tarifData.map(t => `
-    <div class="tarif-card">
-      <div class="tarif-card__format"><span class="tarif-card__icon">${t.icon}</span> ${t.format}</div>
+  // G\u00E9n\u00E9rer la grille par produit
+  const tarifHTML = `
+    <div class="tarif-card tarif-card--wide">
+      <div class="tarif-card__format"><span class="tarif-card__icon">\uD83C\uDF7A</span> Tarif par produit \u2014 Prix unitaire HT</div>
       <div class="tarif-card__rows">
-        ${t.rows.map(r => `
-          <div class="tarif-card__row">
-            <span class="tarif-card__label">${r.label}</span>
-            <span class="tarif-card__price">${r.price}</span>
-          </div>
-        `).join('')}
+        <div class="tarif-card__row tarif-card__row--header">
+          <span class="tarif-card__label" style="font-weight:700">Produit</span>
+          <span class="tarif-card__price" style="font-weight:700;min-width:70px">33cl</span>
+          <span class="tarif-card__price" style="font-weight:700;min-width:70px">75cl</span>
+        </div>
+        ${PRODUCTS.map(p => `
+        <div class="tarif-card__row">
+          <span class="tarif-card__label">${p.name}${p.medal ? ' \uD83C\uDFC5' : ''}${p.season ? ' *' : ''}</span>
+          <span class="tarif-card__price" style="min-width:70px">${p.prices['33u'] ? p.prices['33u'].toFixed(2) + '\u20AC' : '\u2014'}</span>
+          <span class="tarif-card__price" style="min-width:70px">${p.prices['75u'] ? p.prices['75u'].toFixed(2) + '\u20AC' : '\u2014'}</span>
+        </div>`).join('')}
       </div>
     </div>
-  `).join('');
+    <div class="tarif-card">
+      <div class="tarif-card__format"><span class="tarif-card__icon">\uD83D\uDCE6</span> Conditionnements</div>
+      <div class="tarif-card__rows">
+        <div class="tarif-card__row"><span class="tarif-card__label">33cl \u2014 Carton de 12</span><span class="tarif-card__price">12 x prix unit.</span></div>
+        <div class="tarif-card__row"><span class="tarif-card__label">75cl \u2014 Carton de 6</span><span class="tarif-card__price">6 x prix unit.</span></div>
+        <div class="tarif-card__row"><span class="tarif-card__label">75cl \u2014 Caisse CFP 12</span><span class="tarif-card__price">12 x prix unit. + 5\u20AC consigne</span></div>
+      </div>
+    </div>
+    <div class="tarif-card">
+      <div class="tarif-card__format"><span class="tarif-card__icon">\uD83C\uDF7A</span> F\u00FBts inox (consign\u00E9s)</div>
+      <div class="tarif-card__rows">
+        <div class="tarif-card__row"><span class="tarif-card__label">F\u00FBt 20L</span><span class="tarif-card__price">85.00\u20AC HT + 30\u20AC consigne</span></div>
+        <div class="tarif-card__row"><span class="tarif-card__label">F\u00FBt 30L</span><span class="tarif-card__price">120.00\u20AC HT + 30\u20AC consigne</span></div>
+        <div class="tarif-card__row"><span class="tarif-card__label">Location tireuse</span><span class="tarif-card__price">Sur devis</span></div>
+      </div>
+    </div>
+    <div class="tarif-card">
+      <div class="tarif-card__format"><span class="tarif-card__icon">\uD83C\uDF81</span> Packs</div>
+      <div class="tarif-card__rows">
+        <div class="tarif-card__row"><span class="tarif-card__label">Tripack 3x33cl</span><span class="tarif-card__price">6.76\u20AC HT</span></div>
+        <div class="tarif-card__row"><span class="tarif-card__label">Sixpack 6x33cl</span><span class="tarif-card__price">12.28\u20AC HT</span></div>
+        <div class="tarif-card__row"><span class="tarif-card__label">Sixpack No\u00EBl 6x33cl</span><span class="tarif-card__price">14.10\u20AC HT</span></div>
+      </div>
+    </div>
+    <div class="tarif-card tarif-card--wide">
+      <div class="tarif-card__format"><span class="tarif-card__icon">\uD83D\uDCCB</span> Conditions commerciales</div>
+      <div class="tarif-card__rows">
+        <div class="tarif-card__row"><span class="tarif-card__label">TVA</span><span class="tarif-card__price">20% (5.5% limonade)</span></div>
+        <div class="tarif-card__row"><span class="tarif-card__label">Paiement</span><span class="tarif-card__price">30 jours net</span></div>
+        <div class="tarif-card__row"><span class="tarif-card__label">Franco de port</span><span class="tarif-card__price">D\u00E8s 850\u20AC HT / commande</span></div>
+        <div class="tarif-card__row"><span class="tarif-card__label">Validit\u00E9</span><span class="tarif-card__price">31/12/2026</span></div>
+        <div class="tarif-card__row"><span class="tarif-card__label">Facturation</span><span class="tarif-card__price">Droits acquitt\u00E9s</span></div>
+      </div>
+      <p style="font-size:0.72rem;color:var(--text-muted);margin-top:10px;padding:0 16px;">* Bi\u00E8re de saison \u2014 stock limit\u00E9. \uD83C\uDFC5 M\u00E9daille Concours International de Lyon.</p>
+    </div>`;
+  grid.innerHTML = tarifHTML;
 }
 
 /* ═══════════════════════════════════════════
