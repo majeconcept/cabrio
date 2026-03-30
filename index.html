@@ -1046,11 +1046,16 @@ ul { list-style: none; }
   justify-content: center;
 }
 
-.story__visual img {
-  width: 100%;
+.story__visual iframe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 177.78%;
   height: 100%;
-  object-fit: cover;
-  display: block;
+  min-width: 100%;
+  min-height: 56.25%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
 }
 
 .story__visual-credit {
@@ -2263,8 +2268,7 @@ ul { list-style: none; }
         </div>
       </div>
       <div class="story__visual" aria-label="La brasserie CABRIO dans le parc de Wesserling">
-        <img src="images/brasseparchristophe.webp" alt="Christophe, brasseur fondateur de la Brasserie CABRIO" loading="lazy" width="1024" height="768">
-        <span class="story__visual-credit">&#128247; par Christophe</span>
+        <div id="storyPlayer"></div>
       </div>
     </div>
 
@@ -2690,7 +2694,7 @@ ul { list-style: none; }
         playsinline: 1,
         rel: 0,
         showinfo: 0,
-        playlist: 'LsflJs7_hgA' // Required for loop to work
+        playlist: 'LsflJs7_hgA'
       },
       events: {
         onReady: function(e) { e.target.mute(); e.target.playVideo(); },
@@ -2699,6 +2703,42 @@ ul { list-style: none; }
         }
       }
     });
+
+    // Story section player — boucle 2:39 → 2:52 (159s → 172s)
+    var storyPlayer = new YT.Player('storyPlayer', {
+      videoId: 'LsflJs7_hgA',
+      playerVars: {
+        autoplay: 1,
+        start: 159,
+        end: 172,
+        mute: 1,
+        controls: 0,
+        disablekb: 1,
+        modestbranding: 1,
+        playsinline: 1,
+        rel: 0,
+        showinfo: 0
+      },
+      events: {
+        onReady: function(e) { e.target.mute(); e.target.playVideo(); },
+        onStateChange: function(e) {
+          if (e.data === YT.PlayerState.ENDED || e.data === YT.PlayerState.PAUSED) {
+            e.target.seekTo(159);
+            e.target.playVideo();
+          }
+        }
+      }
+    });
+
+    // Fallback : vérification toutes les 500ms pour relooper le segment
+    setInterval(function() {
+      if (storyPlayer && storyPlayer.getCurrentTime) {
+        var t = storyPlayer.getCurrentTime();
+        if (t >= 172) {
+          storyPlayer.seekTo(159);
+        }
+      }
+    }, 500);
   };
 
   // Load YouTube API
