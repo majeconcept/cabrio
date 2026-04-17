@@ -840,6 +840,12 @@ input, select, textarea { font: inherit; color: inherit; }
 .tarif-card__label { font-size: 0.85rem; color: rgba(245, 237, 216, 0.7); }
 .tarif-card__price { font-size: 0.9rem; font-weight: 700; color: var(--amber); text-align: right; }
 .tarif-card--wide { grid-column: 1 / -1; }
+/* Colonnes fixes pour les tables à 3 colonnes */
+.tarif-card--wide .tarif-card__row {
+  display: grid;
+  grid-template-columns: 1fr 80px 80px;
+  align-items: center;
+}
 .tarif-card__row--header { background: rgba(212, 136, 28, 0.08); }
 .tarifs__note {
   text-align: center;
